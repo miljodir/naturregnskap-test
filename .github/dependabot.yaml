@@ -1,0 +1,17 @@
+# Configuring this file is optional. Pull requests for security patches will be created automatically by dependabot regardless of the config in this file.
+# This file is only necessary if you want to further control the behaviour of dependabot
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  - directory: /
+    package-ecosystem: github-actions
+    rebase-strategy: auto
+    target-branch: main
+    schedule:
+      interval: "weekly"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
