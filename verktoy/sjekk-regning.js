@@ -8,7 +8,7 @@ const acorn = require('acorn'),
   walk = require('acorn-walk'),
   fs = require('fs'),
   path = require('path');
-const MAPPE = path.resolve(__dirname, '..', 'js');
+const MAPPE = path.resolve(__dirname, '..', 'public', 'js');
 const REGNING = /^(tolk|kryss|bygg|tell|les)[A-ZÆØÅ]/;
 const OGSAA = [
   'ryddStriper',

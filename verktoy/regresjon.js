@@ -8,7 +8,7 @@
    Bare noen:   node verktoy/regresjon.js ut/ny --bare trondheim,oslo
 
    Trenger pakken playwright og en Chromium. Stien til Chromium kan settes med CHROMIUM, ellers brukes Playwrights egen.
-   Går nettet gjennom en proxy, leses den fra HTTPS_PROXY. */
+   Går nettet gjennom en proxy, leses den fra HTTPS_PROXY. Siden bygges med Vite før den testes. */
 const { chromium } = require('playwright');
 const fs = require('fs'),
   path = require('path'),
@@ -25,6 +25,17 @@ const TYPER = {
   '.geojson': 'application/geo+json'
 };
 const TESTPLAN = path.join(__dirname, 'testdata', 'testplan-bygg.geojson');
+
+/* Bygger siden i kilde og gir mappen med det ferdige bygget. En utgave fra før byggesteget testes som den er. En utpakket
+   git-utgave låner node_modules fra arbeidskopien. */
+function bygg(kilde) {
+  if (!fs.existsSync(path.join(kilde, 'vite.config.mjs'))) return kilde;
+  if (!fs.existsSync(path.join(kilde, 'node_modules')))
+    fs.symlinkSync(path.join(ROT, 'node_modules'), path.join(kilde, 'node_modules'), 'junction');
+  const ut = fs.mkdtempSync(path.join(os.tmpdir(), 'regresjon-bygg-'));
+  execSync(`npx vite build --outDir "${ut}" --emptyOutDir --logLevel warn`, { cwd: kilde, stdio: 'inherit' });
+  return ut;
+}
 
 async function startNettleser() {
   const valg = {};
@@ -321,6 +332,7 @@ const SCENARIER = {
 
 async function kjor(kilde, ut, bare) {
   fs.mkdirSync(ut, { recursive: true });
+  kilde = bygg(kilde);
   const nettleser = await startNettleser(),
     resultat = {};
   for (const navn of Object.keys(SCENARIER)) {

@@ -1,4 +1,5 @@
 index.html
 *.json
-oversikt/
+public/oversikt/
 verktoy/testdata/
+dist/

@@ -1,6 +1,6 @@
 /* Sjekker navnene i skriptene. De er vanlige skript som deler ett navnerom, så feil som moduler ville fanget, må sjekkes her:
    - et navn på toppnivå som er definert i to filer
-   - et navn på toppnivå som er likt en id i index.html (eldre Safari nektet å laste slike skript)
+   - et navn på toppnivå som er likt en id på siden, i index.html eller i komponentene i src (eldre Safari nektet å laste slike skript)
    - et navn som brukes, men ikke er definert noe sted, for eksempel en skrivefeil eller en variabel som er flyttet
    Kjør: node verktoy/sjekk-navn.js */
 const acorn = require('acorn'),
@@ -8,7 +8,7 @@ const acorn = require('acorn'),
   fs = require('fs'),
   path = require('path');
 const ROT = path.resolve(__dirname, '..'),
-  MAPPE = path.join(ROT, 'js');
+  MAPPE = path.join(ROT, 'public', 'js');
 /* Det nettleseren og bibliotekene gir. Språkets egne navn (Math, Map, Promise og så videre) hentes fra Node. */
 const NETTLESER = [
   'window',
@@ -54,9 +54,16 @@ const meld = t => {
 };
 for (const [navn, filer] of definert)
   if (filer.length > 1) meld(`${navn} er definert i flere filer: ${filer.join(', ')}`);
-const ider = [...fs.readFileSync(path.join(ROT, 'index.html'), 'utf8').matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
-for (const id of ider)
-  if (definert.has(id)) meld(`${id} er både en id i index.html og et navn i ${definert.get(id)[0]}`);
+const sider = [
+  'index.html',
+  ...fs
+    .readdirSync(path.join(ROT, 'src'))
+    .filter(f => f.endsWith('.jsx'))
+    .map(f => path.join('src', f))
+];
+for (const side of sider)
+  for (const [, id] of fs.readFileSync(path.join(ROT, side), 'utf8').matchAll(/\bid="([^"]+)"/g))
+    if (definert.has(id)) meld(`${id} er både en id i ${side} og et navn i ${definert.get(id)[0]}`);
 const meldt = new Set();
 for (const [navn, fil, linje] of brukt) {
   if (definert.has(navn) || NETTLESER.includes(navn) || navn in globalThis || meldt.has(navn + fil)) continue;

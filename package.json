@@ -1,20 +1,30 @@
 {
   "name": "naturregnskap-demo",
   "private": true,
-  "description": "Verktøy til utvikling. Selve siden trenger ikke noe av dette: den er rene filer uten byggesteg.",
+  "description": "Siden bygges med Vite. npm run dev under utvikling, npm run build for det som legges ut.",
   "scripts": {
-    "formater": "prettier --write js stil.css verktoy/*.js",
-    "sjekk-format": "prettier --check js stil.css verktoy/*.js",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "formater": "prettier --write public/js src verktoy/*.js vite.config.mjs",
+    "sjekk-format": "prettier --check public/js src verktoy/*.js vite.config.mjs",
     "test": "node verktoy/regresjon.js ut/ny --mot HEAD",
-    "sjekk": "node verktoy/sjekk-navn.js && node verktoy/sjekk-regning.js",
-    "md-css": "node verktoy/md-css.js"
+    "sjekk": "node verktoy/sjekk-navn.js && node verktoy/sjekk-regning.js"
   },
   "devDependencies": {
-    "@miljodirektoratet/md-css": "6.32.0",
+    "@vitejs/plugin-react": "^6.1.2",
     "acorn": "^8.0.0",
     "acorn-walk": "^8.0.0",
     "eslint-scope": "^9.0.0",
+    "marked": "^18.1.0",
     "playwright": "^1.50.0",
-    "prettier": "3.9.9"
+    "prettier": "3.9.9",
+    "vite": "^8.3.3"
+  },
+  "dependencies": {
+    "@miljodirektoratet/md-css": "6.32.0",
+    "@miljodirektoratet/md-react": "6.35.0",
+    "react": "19.2.5",
+    "react-dom": "19.2.5"
   }
 }

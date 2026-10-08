@@ -2,7 +2,7 @@
    og for vann hav, innsjøer og elver.
    Planlagt utbygging har to mørke farger som ikke finnes i grunnkartet: koksgrå for natur og brun for jordbruk. De er kontrollert
    mot alle kartfargene, også vannfargene, for vanlig fargesyn og de tre vanligste formene for fargeblindhet. */
-/* Utformingen følger Miljødirektoratets designsystem (md.css): fargene til tekst, flater, kanter og knapper, skriftene og fokus
+/* Utformingen følger Miljødirektoratets designsystem (md-css): fargene til tekst, flater, kanter og knapper, skriftene og fokus
    er designsystemets. Kartfargene over er data, ikke utforming, og står for seg. Designsystemet har ikke mørkt tema. */
 /* Layout: velgere øverst, kartet som eneste panel til venstre, tallene åpent til høyre, metode og kall-logg under. */
 :root {

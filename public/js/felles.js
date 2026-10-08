@@ -51,8 +51,8 @@ const VANN = [
 const ALLE = [...KL, ...VANN],
   JOR = 1,
   NAT = 2; /* plass i ALLE: 0 bebygd, 1 jordbruk, 2 natur, deretter vann */
-/* Settes av verktoy/utgave.py ved hver endring, så man ser hvilken utgave en fane kjører */
-const VERSJON = '8. oktober kl. 10.55';
+/* Settes når siden bygges (vite.config.mjs), så man ser hvilken utgave en fane kjører */
+const VERSJON = document.documentElement.dataset.utgave || 'lokal utvikling';
 const $ = id => document.getElementById(id);
 /* All delt tilstand for siden, samlet på ett sted. Tegnefunksjonene leser herfra, og samordningen skriver hit. Regnefunksjonene
    bruker den ikke: de får det de trenger som argumenter. Det som bare er hjelpemidler for én fil, som minner, tellere og tidtakere,

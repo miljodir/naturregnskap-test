@@ -10,7 +10,7 @@ Kjør fra roten av repoet:
     python3 verktoy/oversiktsbilde.py 5001 5021
     python3 verktoy/oversiktsbilde.py --fylke 50 --hentet "5. og 6. oktober 2026"
 
-Bildene legges i oversikt/, og oversikt.json oppdateres. Kommuner som alt har bilde, hoppes over uten --paa-nytt.
+Bildene legges i public/oversikt/, og public/oversikt.json oppdateres. Kommuner som alt har bilde, hoppes over uten --paa-nytt.
 Grunnkartet er lisensiert «Norge digitalt begrenset». Vær varsom med belastningen: en kommune koster 4 til 16 kall.
 
 Trenger numpy, Pillow og shapely. Går nettet gjennom en proxy med eget sertifikat, leses det fra SSL_CERT_FILE.
@@ -21,7 +21,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 from shapely.geometry import shape
 
-ROT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'public')
 WMS = 'https://wms.nibio.no/cgi-bin/grunnkart_arealanalyse'
 KV = 'https://api.kartverket.no/kommuneinfo/v1'
 LENGSTE = 2048     # piksler på lengste side i det ferdige bildet

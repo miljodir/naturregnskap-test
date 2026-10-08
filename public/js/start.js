@@ -38,14 +38,14 @@ KL.forEach(([id, navn]) => {
     k.setAttribute('aria-pressed', String(app.inonPaa));
     visInon();
   });
-  inonRad.blokk.append(...$('mal-inon').content.children); /* bare elementene, ikke linjeskiftene mellom dem */
+  inonRad.blokk.append(...$('mal-inon').children);
   rows.append(inonRad.rad, inonRad.blokk);
   graaRad = temaRad('graa', 'Grått areal', 'flate graa', k => {
     app.graaPaa = !app.graaPaa;
     k.setAttribute('aria-pressed', String(app.graaPaa));
     visGraa();
   });
-  graaRad.blokk.append(...$('mal-graa').content.children); /* bare elementene, ikke linjeskiftene mellom dem */
+  graaRad.blokk.append(...$('mal-graa').children);
   rows.append(graaRad.rad, graaRad.blokk);
 }
 /* Teknisk informasjon til feilsøking: utgave, måling av hvor jevnt kartet går, siste kall under kartet og listen over kall.
