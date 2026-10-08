@@ -5,22 +5,23 @@ henter data fra, og verktøy som brukes under utvikling. Det følger koden slik 
 
 ## Rammeverk
 
-Siden bruker React og bygges med Vite. Kartet og utregningene ligger fortsatt i vanlig JavaScript i `public/js`, som
-kopieres uendret til det ferdige bygget. Bygget er statiske filer. Det finnes ingen egen server og ingen database.
+Siden bruker React og bygges med Vite. Alle biblioteker bygges inn i siden. Bygget er statiske filer. Det finnes ingen egen
+server og ingen database.
 
 ## Biblioteker som lastes i nettleseren
 
-| Bibliotek | Versjon | Lisens | Lastes fra | Brukes til | Størrelse pakket |
-|---|---|---|---|---|---|
-| React og React DOM | 19.2.5 | MIT | Siden selv, i bygget | Sidens innhold | Sammen med md-react: 139 kB |
-| `@miljodirektoratet/md-react` | 6.35.0 | MIT | Siden selv, i bygget | Knapper, lenker og avkrysning fra designsystemet. Tar med Ariakit (MIT). | Se over |
-| `@miljodirektoratet/md-css` | 6.32.0 | MIT | Siden selv, i bygget | Designsystemets stil | 18 kB, sammen med sidens egen stil |
-| OpenLayers (`ol`) | 10.6.1 | BSD 2-Clause | cdn.jsdelivr.net | Kartet: lag, fliser, tegning av flater, zoom og måling av areal | 234 kB, pluss 1,5 kB stil |
-| proj4js | 2.11.0 | MIT | cdnjs.cloudflare.com | Koordinatsystemer: UTM sone 32, 33 og 35 og grader, blant annet for opplastede planer | 30 kB |
-| polygon-clipping | 0.15.7 | MIT | cdn.jsdelivr.net | Klipping av verneområder og villreinområder mot kommunegrensen, og sammenslåing av dekningsflater | 9 kB |
+Alle lastes fra samme sted som siden, i ett samlet bygg. Versjonene er låst i `package.json`.
 
-Versjonene til bibliotekene fra CDN er låst i adressene i `index.html`, de andre i `package.json`. Sidens egen kode i
-`public/js` er til sammenligning rundt 75 kB pakket.
+| Bibliotek | Versjon | Lisens | Brukes til |
+|---|---|---|---|
+| React og React DOM | 19.2.5 | MIT | Sidens innhold |
+| `@miljodirektoratet/md-react` | 6.35.0 | MIT | Velgere, knapper, lenker og avkrysning fra designsystemet. Tar med Ariakit (MIT). |
+| `@miljodirektoratet/md-css` | 6.32.0 | MIT | Designsystemets stil |
+| OpenLayers (`ol`) | 10.6.1 | BSD 2-Clause | Kartet: lag, fliser, tegning av flater, zoom og måling av areal |
+| proj4js | 2.11.0 | MIT | Koordinatsystemer: UTM sone 32, 33 og 35 og grader, blant annet for opplastede planer |
+| polygon-clipping | 0.15.7 | MIT | Klipping av verneområder og villreinområder mot kommunegrensen, og sammenslåing av dekningsflater |
+
+Bygget er rundt 320 kB JavaScript og 19 kB stil, pakket.
 
 ## Designsystem
 
@@ -72,11 +73,11 @@ Siden ligger på GitHub Pages. Ved push til `main` i repoet `miljodir/naturregns
 - Siden setter ingen informasjonskapsler og lagrer ingenting i nettleseren. Valg som teknisk visning og kommune står i adressen.
 - Det er ingen måling av bruk og ingen sporing i sidens kode.
 - Filer brukeren laster opp, og områder brukeren tegner, leses og regnes i nettleseren og sendes ingen steder.
-- Nettleseren kontakter ti verter utenfor siden: de to som leverer biblioteker, de to som leverer skrifter, og seks hos
+- Nettleseren kontakter åtte verter utenfor siden: de to som leverer skrifter, og seks hos
   dataeierne. Hver av dem ser brukerens IP-adresse og hvilken side kallet kommer fra, og kallene til dataeierne viser hvilken
   kommune og hvilket kartutsnitt brukeren ser på.
-- Bibliotekene lastes uten integritetssjekk (`integrity`-attributt). Endres en fil hos leverandøren, kjører nettleseren den
-  likevel. Dette bør rettes, enten med integritetssjekk eller ved å legge bibliotekene sammen med siden.
+- Bibliotekene ligger i bygget og lastes fra samme sted som siden, så de kan ikke endres hos en leverandør uten at siden
+  bygges på nytt.
 
 ## Verktøy under utvikling
 
@@ -89,9 +90,8 @@ Ingen av disse følger med siden til brukeren.
 | marked | MIT | Sidene for METODE og AVHENGIGHETER, laget fra markdown ved byggingen |
 | Prettier 3.9.9 | MIT | Formatering av koden |
 | acorn, acorn-walk | MIT | Sjekken av skillet mellom regning og tegning |
-| eslint-scope | BSD 2-Clause | Sjekken av navnene i skriptene |
 | Python med NumPy, Pillow og Shapely | BSD og lignende | Bygging av oversiktsbildene |
 
 ## Planlagt
 
-Innholdet skal flyttes fra skriptene i `public/js` til React-komponenter, en del om gangen. Se README.
+Flere deler kan bruke komponentene fra designsystemet direkte. Se README.

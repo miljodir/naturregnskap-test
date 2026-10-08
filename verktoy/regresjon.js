@@ -173,6 +173,20 @@ const trykk = async (p, sel, vent = 1200) => {
   await p.waitForTimeout(vent);
   await p.rolig(600);
 };
+/* Velger fylke og så kommune: med MdSelect og MdComboBox, eller med vanlige select-elementer i eldre utgaver. */
+async function velgKommune(p, [fylke, fylkeNavn], [kommune, kommuneNavn]) {
+  if (await p.locator('select#fylke').count()) {
+    await p.selectOption('#fylke', fylke);
+    await p.waitForTimeout(500);
+    await p.selectOption('#kommune', kommune);
+    return;
+  }
+  await p.locator('#fylkevelger .md-select__button').click();
+  await p.getByRole('option', { name: fylkeNavn, exact: true }).click();
+  await p.waitForTimeout(500);
+  await p.locator('#kommunevelger input').fill(kommuneNavn);
+  await p.getByRole('option', { name: kommuneNavn, exact: true }).click();
+}
 
 const SCENARIER = {
   /* Kommune med lagret oversiktsbilde: alt regnes ut for hele kommunen når siden åpnes. */
@@ -319,9 +333,7 @@ const SCENARIER = {
     await p.locator('#kartflate').scrollIntoViewIfNeeded();
     await R.bilde('1-oversikt');
     /* bytt kommune med velgeren, og tilbake igjen */
-    await p.selectOption('#fylke', '50');
-    await p.waitForTimeout(500);
-    await p.selectOption('#kommune', '5031');
+    await velgKommune(p, ['50', 'Trøndelag'], ['5031', 'Malvik']);
     await p.waitForTimeout(6000);
     await p.rolig();
     R.tekst.malvik = await tallpanel(p);

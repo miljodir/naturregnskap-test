@@ -106,24 +106,9 @@ table {
   flex-wrap: wrap;
   gap: 12px;
 }
-/* Velgerne er vanlige select-elementer med utseendet til MdSelect. MdSelect bygger på Ariakit og krever React. */
-.pick label {
-  display: flex;
-  flex-direction: column;
-  gap: var(--md-size-8);
-  font: var(--md-typography-weight-medium) var(--md-typography-label-s) / var(--md-typography-line-height-small)
-    var(--md-typography-family-label);
-  color: var(--ink);
-}
-.pick select {
-  font: var(--md-typography-weight-regular) var(--md-typography-size-16) / var(--md-typography-line-height-medium)
-    var(--body);
-  color: var(--ink);
-  background: var(--md-color-background-primary);
-  border: 1px solid var(--md-color-border-primary);
-  border-radius: var(--md-radius-sm);
-  padding: 0.6875rem var(--md-size-12);
-  min-width: 190px;
+/* Fylke er MdSelect og kommune MdComboBox. Begge får fast bredde, så toppen ikke hopper når navnet endres. */
+.pick .velger {
+  width: 220px;
   max-width: 100%;
 }
 

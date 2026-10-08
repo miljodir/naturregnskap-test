@@ -1,7 +1,9 @@
 import { app, finn } from '../motor/felles.js';
 import { velg, velgFylke } from '../motor/start.js';
+import MdSelect from '@miljodirektoratet/md-react/dist/formElements/MdSelect';
+import MdComboBox from '@miljodirektoratet/md-react/dist/formElements/MdComboBox';
 
-/* Toppen: navnet på siden og velgerne for fylke og kommune. */
+/* Toppen: navnet på siden og velgerne for fylke og kommune. Kommunene i fylket kan filtreres ved å skrive i feltet. */
 export function Topp() {
   const valgt = app.valgt && finn(app.valgt.nr),
     fylke = valgt ? valgt[0] : null;
@@ -11,34 +13,26 @@ export function Topp() {
         Bebygd, jordbruk, natur<small>Direkte fra åpne kilder, uten egen server</small>
       </div>
       <div className="pick">
-        <label htmlFor="fylke">
-          Fylke
-          <select id="fylke" value={fylke ? fylke.nr : ''} onChange={e => velgFylke(e.target.value)}>
-            {fylke ? (
-              app.fylker.map(f => (
-                <option key={f.nr} value={f.nr}>
-                  {f.navn}
-                </option>
-              ))
-            ) : (
-              <option value="">Henter …</option>
-            )}
-          </select>
-        </label>
-        <label htmlFor="kommune">
-          Kommune
-          <select id="kommune" value={valgt ? app.valgt.nr : ''} onChange={e => velg(e.target.value)}>
-            {fylke ? (
-              fylke.kommuner.map(k => (
-                <option key={k.nr} value={k.nr}>
-                  {k.navn}
-                </option>
-              ))
-            ) : (
-              <option value="">Henter …</option>
-            )}
-          </select>
-        </label>
+        <div className="velger" id="fylkevelger">
+          <MdSelect
+            id="fylke"
+            label="Fylke"
+            placeholder="Henter …"
+            options={app.fylker.map(f => ({ value: f.nr, text: f.navn }))}
+            value={fylke ? fylke.nr : ''}
+            onSelectOption={nr => nr && velgFylke(nr)}
+          />
+        </div>
+        <div className="velger" id="kommunevelger">
+          <MdComboBox
+            id="kommune"
+            label="Kommune"
+            placeholder={fylke ? 'Søk etter kommune' : 'Henter …'}
+            options={fylke ? fylke.kommuner.map(k => ({ value: k.nr, text: k.navn })) : []}
+            value={valgt ? app.valgt.nr : ''}
+            onSelectOption={nr => nr && velg(nr)}
+          />
+        </div>
       </div>
     </header>
   );
