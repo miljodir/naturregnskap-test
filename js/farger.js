@@ -1,8 +1,8 @@
 /* Farger: stilen som sendes til NIBIO, tolking av fargene i svaret, og fargelegging i nettleseren. */
 /* Stilen som sendes til NIBIO: seks regler med rene farger. Den er lik i alle kall. */
-/* Fargene leses fra stilarket én gang og huskes til temaet byttes. Å spørre stilarket for hver flis tvinger nettleseren
+/* Fargene leses fra stilarket én gang og huskes. Å spørre stilarket for hver flis tvinger nettleseren
    til å regne ut stiler på nytt midt i tegningen. */
-let fargeMinne = {},
+const fargeMinne = {},
   rgbMinne = {};
 const farge = id =>
   fargeMinne[id] ||

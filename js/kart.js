@@ -47,16 +47,6 @@ const kart = new ol.Map({
     new ol.control.Attribution({ collapsible: false })
   ]
 });
-const tegnPaaNytt = () => {
-  fargeMinne = {};
-  rgbMinne = {};
-  tegnOversikt();
-  fargeleggFliser();
-  [planLag, inonLag, graaLag].forEach(friskOpp);
-  heltSlor = null;
-  friskOpp(dekLag);
-  grense.changed();
-};
 /* Når selve siden er forstørret, fyller kartet fort hele skjermen. Fanget kartet da alle bevegelser, kom man ikke ut igjen.
    Kartet slipper derfor knip og dra igjennom til nettleseren så lenge siden er forstørret. Knappene for zoom og trykk i kartet virker fortsatt. */
 if (window.visualViewport) {

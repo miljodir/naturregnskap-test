@@ -279,9 +279,3 @@ hent('Egen fil', 'Fylker og kommuner', 'kommuner.json', true)
     $('navn').textContent = 'Kommunelisten kunne ikke hentes';
     $('under').textContent = 'Sjekk nettforbindelsen og last siden på nytt.';
   });
-
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', tegnPaaNytt);
-new MutationObserver(tegnPaaNytt).observe(document.documentElement, {
-  attributes: true,
-  attributeFilter: ['data-theme']
-});

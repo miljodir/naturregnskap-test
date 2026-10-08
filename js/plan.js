@@ -476,7 +476,7 @@ function visPlanInfo() {
     i = gjeldende(app.planInfo),
     ingen = ingenPlan(),
     navn = app.valgt ? app.valgt.navn : '';
-  s.className = ingen ? 'mangler' : '';
+  s.className = ingen ? 'md-alert-message md-alert-message--warning md-alert-message--fullWidth' : '';
   $('planknapp').querySelector('.km').textContent = ingen ? 'ingen plan' : '';
   pi.hidden = !ingen;
   $('linje-pnat').hidden = $('linje-pjor').hidden = utenPlan();

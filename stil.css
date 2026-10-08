@@ -1,21 +1,25 @@
 /* Klassefargene er hentet fra grunnkartets egen tegnforklaring: bebygd og opparbeidet areal, dyrket mark og skog,
    og for vann hav, innsjøer og elver.
    Planlagt utbygging har to mørke farger som ikke finnes i grunnkartet: koksgrå for natur og brun for jordbruk. De er kontrollert
-   mot alle kartfargene, også vannfargene, for vanlig fargesyn og de tre vanligste formene for fargeblindhet. Fargene er like i lyst og mørkt tema. */
+   mot alle kartfargene, også vannfargene, for vanlig fargesyn og de tre vanligste formene for fargeblindhet. */
+/* Utformingen følger Miljødirektoratets designsystem (md.css): fargene til tekst, flater, kanter og knapper, skriftene og fokus
+   er designsystemets. Kartfargene over er data, ikke utforming, og står for seg. Designsystemet har ikke mørkt tema. */
 /* Layout: velgere øverst, kartet som eneste panel til venstre, tallene åpent til høyre, metode og kall-logg under. */
 :root {
-  --bg: #f2f4f1;
-  --surface: #fbfcfa;
-  --ink: #17201c;
-  --ink-2: #47534e;
-  --ink-3: #6f7b75;
-  --line: #d3dad5;
+  /* Sofia Pro er lisensiert og følger ikke med siden. Finnes den ikke på enheten, brukes Open Sans. */
+  --md-typography-family-heading: 'SofiaPro-Regular', 'Open Sans', sans-serif;
+  --bg: var(--md-color-background-primary);
+  --surface: var(--md-color-surface-white);
+  --ink: var(--md-color-text-primary);
+  --ink-2: var(--md-color-grey-6);
+  --ink-3: var(--md-color-grey-5);
+  --line: var(--md-color-border-secondary);
   --beb: #e86474;
   --jor: #ffd16e;
   --nat: #9ecc73;
   --pnat: #171c1a;
   --pjor: #92400e;
-  --accent: #2b4c7e;
+  --accent: var(--md-color-cta-primary-default);
   --hav: #bdd7e7;
   --inn: #6baed6;
   --elv: #08519c;
@@ -38,42 +42,9 @@
   --inon2: #6daf55;
   --inon1: #3e8e41;
   --inonv: #1f6130;
-  --display: 'Familjen Grotesk', 'Avenir Next', 'Segoe UI', sans-serif;
-  --body: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #121715;
-    --surface: #1a201d;
-    --ink: #e9eeea;
-    --ink-2: #b5bfb9;
-    --ink-3: #88938d;
-    --line: #2e3733;
-    --beb: #e86474;
-    --jor: #ffd16e;
-    --nat: #9ecc73;
-    --pnat: #171c1a;
-    --pjor: #92400e;
-    --accent: #9dbdee;
-    --land: #7a756a;
-    color-scheme: dark;
-  }
-}
-:root[data-theme='dark'] {
-  --bg: #121715;
-  --surface: #1a201d;
-  --ink: #e9eeea;
-  --ink-2: #b5bfb9;
-  --ink-3: #88938d;
-  --line: #2e3733;
-  --beb: #e86474;
-  --jor: #ffd16e;
-  --nat: #9ecc73;
-  --pnat: #171c1a;
-  --pjor: #92400e;
-  --accent: #9dbdee;
-  --land: #7a756a;
-  color-scheme: dark;
+  --display: var(--md-typography-family-heading);
+  --body: var(--md-typography-family-body);
+  color-scheme: light;
 }
 
 * {
@@ -86,7 +57,8 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font: 400 16px/1.5 var(--body);
+  font: var(--md-typography-weight-regular) var(--md-typography-body-m) / var(--md-typography-line-height-medium)
+    var(--body);
 }
 .wrap {
   max-width: 1180px;
@@ -107,8 +79,8 @@ table {
   margin: 0;
 }
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--md-size-3) solid var(--md-color-focus-outer);
+  outline-offset: var(--md-size-3);
 }
 
 .top {
@@ -119,45 +91,45 @@ table {
   justify-content: space-between;
 }
 .brand {
-  font: 600 15px/1.2 var(--display);
-  letter-spacing: 0.01em;
-  color: var(--ink-2);
+  font: var(--md-typography-weight-regular) var(--md-typography-heading-xs) / var(--md-typography-line-height-small)
+    var(--display);
+  color: var(--md-color-text-secondary);
 }
 .brand small {
   display: block;
-  font: 400 13px/1.4 var(--body);
-  color: var(--ink-3);
-  letter-spacing: 0;
+  font: var(--md-typography-weight-regular) var(--md-typography-body-s) / var(--md-typography-line-height-medium)
+    var(--body);
+  color: var(--ink-2);
 }
 .pick {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
 }
+/* Velgerne er vanlige select-elementer med utseendet til MdSelect. MdSelect bygger på Ariakit og krever React. */
 .pick label {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-3);
+  gap: var(--md-size-8);
+  font: var(--md-typography-weight-medium) var(--md-typography-label-s) / var(--md-typography-line-height-small)
+    var(--md-typography-family-label);
+  color: var(--ink);
 }
 .pick select {
-  font: 500 16px/1.2 var(--body);
+  font: var(--md-typography-weight-regular) var(--md-typography-size-16) / var(--md-typography-line-height-medium)
+    var(--body);
   color: var(--ink);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 9px 12px;
+  background: var(--md-color-background-primary);
+  border: 1px solid var(--md-color-border-primary);
+  border-radius: var(--md-radius-sm);
+  padding: 0.6875rem var(--md-size-12);
   min-width: 190px;
   max-width: 100%;
 }
 
 .head h1 {
-  font: 600 clamp(34px, 6vw, 56px)/1.02 var(--display);
-  letter-spacing: -0.02em;
+  font: var(--md-typography-weight-regular) clamp(var(--md-typography-heading-l), 5vw, 2.75rem) /
+    var(--md-typography-line-height-small) var(--display);
   text-wrap: balance;
 }
 .head p {
@@ -180,7 +152,7 @@ table {
 .map {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--md-radius-md);
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -191,9 +163,9 @@ table {
   position: relative;
   height: min(68vh, 620px);
   min-height: 340px;
-  border-radius: 6px;
+  border-radius: var(--md-radius-sm);
   overflow: hidden;
-  background: var(--bg);
+  background: var(--md-color-background-grey);
 }
 #kartflate {
   position: absolute;
@@ -224,7 +196,7 @@ table {
 #zoomet {
   top: 64px;
   border-radius: 10px;
-  font-weight: 600;
+  font-weight: var(--md-typography-weight-medium);
 }
 /* Knip på kortet rundt kartet forstørrer ikke siden, så et bomtrykk like utenfor kartet ikke zoomer hele siden. Resten av siden
    kan forstørres som vanlig. Er siden forstørret, slipper kartet bevegelsene igjennom, så man alltid kan knipe seg ut igjen. */
@@ -245,7 +217,7 @@ table {
   font-variant-numeric: tabular-nums;
 }
 .probe b {
-  font-weight: 600;
+  font-weight: var(--md-typography-weight-medium);
   color: var(--ink);
 }
 
@@ -253,17 +225,26 @@ table {
   width: 44px;
   height: 44px;
   font-size: 22px;
-  color: var(--ink);
+  color: var(--md-color-cta-primary-default);
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: var(--md-size-2) solid var(--md-color-cta-primary-default);
+  border-radius: var(--md-radius-md);
   margin: 0 0 6px;
 }
-.ol-control button:hover,
+.ol-control button:hover {
+  color: var(--md-color-cta-primary-default);
+  background: var(--md-color-cta-secondary-hover);
+  outline: none;
+}
 .ol-control button:focus {
-  color: var(--ink);
+  color: var(--md-color-cta-primary-default);
   background: var(--surface);
-  outline: 2px solid var(--accent);
+  outline: none;
+}
+.ol-control button:focus-visible {
+  outline: var(--md-size-3) solid var(--md-color-focus-outer);
+  outline-offset: var(--md-size-3);
+  box-shadow: 0 0 0 var(--md-size-3) var(--md-color-focus-inner);
 }
 .ol-control {
   background: none;
@@ -285,7 +266,7 @@ table {
 .ol-scale-line-inner {
   color: var(--ink-2);
   border-color: var(--ink-2);
-  font: 500 12px/1.3 var(--body);
+  font: var(--md-typography-weight-regular) var(--md-typography-body-xs) / 1.3 var(--body);
 }
 .ol-attribution,
 .ol-attribution:not(.ol-collapsed) {
@@ -310,24 +291,19 @@ table {
 .tema {
   opacity: 0.86;
 }
+/* Knappen er en MdButton som ligger over kartet. Den er en blokk, så et langt kommunenavn kan kuttes med … */
 .bytt {
   position: absolute;
   top: 12px;
   left: 8px;
   z-index: 3;
+  display: block;
   max-width: calc(100% - 16px);
   overflow: hidden;
   text-overflow: ellipsis;
-  font: 600 15px/1.2 var(--body);
   min-height: 44px;
-  padding: 10px 18px;
-  border: 0;
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--surface);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
-  cursor: pointer;
 }
 .punkt {
   width: 16px;
@@ -338,14 +314,6 @@ table {
   box-shadow: 0 0 0 2px var(--surface);
   pointer-events: none;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .bakgrunn {
-    filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
-  }
-}
-:root[data-theme='dark'] .bakgrunn {
-  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
-}
 
 .nums {
   display: flex;
@@ -354,17 +322,18 @@ table {
   min-width: 0;
 }
 .nums h2 {
-  font: 600 13px/1.3 var(--body);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-3);
+  font: var(--md-typography-weight-medium) var(--md-typography-label-m) / var(--md-typography-line-height-small)
+    var(--md-typography-family-label);
+  color: var(--ink);
 }
 .total {
-  font: 600 30px/1.1 var(--display);
+  font: var(--md-typography-weight-regular) var(--md-typography-heading-l) / var(--md-typography-line-height-small)
+    var(--display);
   font-variant-numeric: tabular-nums;
 }
 .total span {
-  font: 400 15px/1.4 var(--body);
+  font: var(--md-typography-weight-regular) var(--md-typography-body-m) / var(--md-typography-line-height-medium)
+    var(--body);
   color: var(--ink-2);
   margin-left: 6px;
 }
@@ -421,7 +390,7 @@ table {
   text-decoration: line-through;
 }
 .row .nm {
-  font-weight: 500;
+  font-weight: var(--md-typography-weight-medium);
 }
 .row .km {
   color: var(--ink-2);
@@ -429,7 +398,7 @@ table {
   white-space: nowrap;
 }
 .row .pc {
-  font: 600 18px/1 var(--display);
+  font: var(--md-typography-weight-regular) var(--md-typography-heading-xs) / 1 var(--display);
   text-align: right;
   white-space: nowrap;
 }
@@ -452,21 +421,16 @@ table {
   font-size: 13px;
   color: var(--ink-2);
 }
+/* Valg med avkrysning bruker MdCheckbox. Teksten er lang, så boksen står ved første linje. */
 .valg {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  font-size: 15px;
-  color: var(--ink-2);
-  cursor: pointer;
   max-width: 62ch;
 }
-.valg input {
-  margin: 4px 0 0;
-  width: 18px;
-  height: 18px;
-  flex: none;
-  accent-color: var(--accent);
+.valg .md-checkbox__label {
+  align-items: flex-start;
+}
+.valg .md-checkbox__labelText {
+  font-size: var(--md-typography-body-s);
+  color: var(--ink-2);
 }
 .forklaring div {
   display: flex;
@@ -487,22 +451,22 @@ table {
 .forklaring #planstatus:empty {
   display: none;
 }
-.forklaring #planstatus.mangler,
-#planinfo {
+/* Meldinger om kommuneplanen og egne områder er MdAlertMessage, med teksten rett i elementet. */
+.forklaring #planstatus.md-alert-message,
+#planinfo,
+#egnemerk {
+  display: block;
+  padding: var(--md-size-12) var(--md-size-16);
+  font-size: var(--md-typography-body-s);
+  font-weight: var(--md-typography-weight-medium);
   color: var(--ink);
-  font-weight: 600;
-  font-size: 14px;
-  padding: 10px 12px;
-  border: 1px solid var(--ink-3);
-  border-radius: 6px;
-  background: var(--surface);
 }
 #planinfo {
   flex-basis: 100%;
 }
 .forklaring b {
   display: block;
-  font-weight: 600;
+  font-weight: var(--md-typography-weight-medium);
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
@@ -593,8 +557,8 @@ table {
 }
 .lagknapp:focus-visible,
 .apne:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
+  outline: var(--md-size-3) solid var(--md-color-focus-outer);
+  outline-offset: calc(-1 * var(--md-size-3));
 }
 .row.naturrad .lagknapp[aria-pressed='false'] .sw {
   background: transparent;
@@ -614,9 +578,9 @@ table {
 }
 .temahode b {
   display: block;
-  font: 600 13px/1.3 var(--body);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font: var(--md-typography-weight-medium) var(--md-typography-label-m) / var(--md-typography-line-height-small)
+    var(--md-typography-family-label);
+  color: var(--ink);
   margin-bottom: 4px;
 }
 .naturblokk {
@@ -627,7 +591,7 @@ table {
   color: var(--ink-2);
 }
 .naturblokk b {
-  font-weight: 600;
+  font-weight: var(--md-typography-weight-medium);
   color: var(--ink);
 }
 .naturblokk ul {
@@ -644,10 +608,8 @@ table {
   border-bottom: 1px solid var(--line);
   font-variant-numeric: tabular-nums;
 }
-.naturblokk li a {
-  color: var(--ink);
-  font-weight: 500;
-  text-decoration-color: var(--ink-3);
+.naturblokk li a:not(.md-button) {
+  color: var(--md-color-cta-primary-default);
   text-underline-offset: 3px;
 }
 .naturblokk li span {
@@ -688,10 +650,10 @@ table {
     inset 0 0 0 3px var(--verdi2),
     0 0 0 1px var(--ink-3);
 }
-.naturblokk .valg {
-  font-size: 14px;
+.naturblokk .valg .md-checkbox__labelText {
+  font-size: var(--md-typography-body-s);
 }
-/* To tydelige valg per område: se det i kartet, eller åpne faktaarket hos Miljødirektoratet i en ny fane. */
+/* To tydelige valg per område: se det i kartet, eller åpne faktaarket hos Miljødirektoratet i en ny fane. Begge er MdButton. */
 .naturblokk li .gjor {
   grid-column: 1 / -1;
   display: flex;
@@ -699,21 +661,9 @@ table {
   gap: 8px;
   margin-top: 6px;
 }
-.naturblokk li .gjor button,
-.naturblokk li .gjor a {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 40px;
-  padding: 8px 14px;
-  border: 1px solid var(--ink-3);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--ink);
-  font: 500 14px/1.2 var(--body);
-  text-decoration: none;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+.naturblokk li .gjor .md-button {
+  gap: var(--md-size-8);
+  font-size: var(--md-typography-size-14);
 }
 .naturblokk li .gjor svg {
   width: 15px;
@@ -724,12 +674,6 @@ table {
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-.naturblokk li .gjor button:focus-visible,
-.naturblokk li .gjor a:focus-visible,
-#vistmerke button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
 }
 #vistmerke {
   left: 10px;
@@ -747,51 +691,41 @@ table {
   border-color: var(--ink-3);
 }
 #vistmerke b {
-  font-weight: 600;
+  font-weight: var(--md-typography-weight-medium);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
 }
-#vistmerke button {
+#vistmerke .md-button {
   flex: none;
-  min-height: 36px;
-  padding: 6px 10px;
-  border: 0;
-  border-radius: 7px;
-  background: none;
-  color: var(--ink);
-  font: 500 13px/1.2 var(--body);
-  text-decoration: underline;
-  text-decoration-color: var(--ink-3);
-  text-underline-offset: 3px;
-  cursor: pointer;
+  font-size: var(--md-typography-size-14);
 }
 #vistmerke #vistlukk {
-  text-decoration: none;
   font-size: 18px;
   line-height: 1;
-  padding: 6px 11px;
 }
 /* Helhetsbildet for verdsatt natur: hvor mye som er kartlagt, og hvor mye verdsatt natur som finnes der det er kartlagt og der det ikke er det. */
 .helhet {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 14px;
-  border: 1px solid var(--ink-3);
-  border-radius: 8px;
-  background: var(--surface);
+  padding: var(--md-size-16);
+  border: 1px solid var(--line);
+  border-radius: var(--md-radius-sm);
+  background: var(--md-color-surface-secondary);
   color: var(--ink-2);
 }
 .helhet h3 {
   margin: 0;
-  font: 600 15px/1.3 var(--body);
+  font: var(--md-typography-weight-medium) var(--md-typography-label-m) / var(--md-typography-line-height-small)
+    var(--md-typography-family-label);
   color: var(--ink);
 }
 .helhet h4 {
   margin: 8px 0 0;
-  font: 600 14px/1.3 var(--body);
+  font: var(--md-typography-weight-medium) var(--md-typography-label-s) / var(--md-typography-line-height-small)
+    var(--md-typography-family-label);
   color: var(--ink);
 }
 .helhet .bar {
@@ -868,7 +802,7 @@ table {
   border-radius: 3px;
 }
 .tegn b {
-  font-weight: 600;
+  font-weight: var(--md-typography-weight-medium);
   color: var(--ink);
 }
 .hint {
@@ -891,12 +825,10 @@ table {
   color: var(--ink);
 }
 .utvikling thead th {
-  text-transform: none;
-  letter-spacing: 0;
-  font-weight: 500;
+  font-weight: var(--md-typography-weight-medium);
   white-space: normal;
   vertical-align: bottom;
-  color: var(--ink-3);
+  color: var(--ink-2);
 }
 .utvikling th:first-child {
   text-align: left;
@@ -904,9 +836,8 @@ table {
 }
 .utvikling tbody th {
   font-size: 15px;
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: 0;
+  font-weight: var(--md-typography-weight-medium);
+  color: var(--ink);
 }
 .utvikling tbody th i {
   display: inline-block;
@@ -942,16 +873,14 @@ table {
 :root:not(.teknisk) .tek {
   display: none;
 } /* teknisk informasjon til feilsøking vises bare når den er slått på */
-.tekknapp {
+/* Knappene er MdButton. Et valg som er slått på (aria-pressed), vises som primærknapp. */
+.notes .md-button {
   align-self: flex-start;
-  min-height: 44px;
-  padding: 10px 16px;
-  border: 1px solid var(--ink-3);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--ink);
-  font: 500 15px/1.2 var(--body);
-  cursor: pointer;
+}
+.md-button--secondary[aria-pressed='true'],
+.md-button--secondary[aria-pressed='true']:hover:not(:disabled) {
+  background-color: var(--md-color-cta-primary-default);
+  color: var(--md-color-text-inverted);
 }
 .egne {
   display: flex;
@@ -968,11 +897,6 @@ table {
   flex-wrap: wrap;
   gap: 8px;
 }
-.egne .tekknapp[aria-pressed='true'] {
-  background: var(--ink);
-  color: var(--surface);
-  border-color: var(--ink);
-}
 .egne ul {
   list-style: none;
   margin: 0;
@@ -985,17 +909,18 @@ table {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 14px;
-  border: 1px solid var(--ink-3);
-  border-radius: 8px;
-  background: var(--surface);
+  padding: var(--md-size-16);
+  border: 1px solid var(--line);
+  border-radius: var(--md-radius-sm);
+  background: var(--md-color-surface-secondary);
 }
 .egne li h3 {
   margin: 0;
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  font: 600 15px/1.3 var(--body);
+  font: var(--md-typography-weight-medium) var(--md-typography-label-m) / var(--md-typography-line-height-small)
+    var(--md-typography-family-label);
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
@@ -1008,26 +933,22 @@ table {
   margin: 0;
 }
 .egne li b {
-  font-weight: 600;
+  font-weight: var(--md-typography-weight-medium);
   color: var(--ink);
-}
-.egne li .tekknapp {
-  min-height: 40px;
-  padding: 8px 14px;
-  font-size: 14px;
 }
 .egne .samlet {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 14px;
-  border: 1px solid var(--ink-3);
-  border-radius: 8px;
-  background: var(--surface);
+  padding: var(--md-size-16);
+  border: 1px solid var(--line);
+  border-radius: var(--md-radius-sm);
+  background: var(--md-color-surface-secondary);
 }
 .egne .samlet h3 {
   margin: 0;
-  font: 600 15px/1.3 var(--body);
+  font: var(--md-typography-weight-medium) var(--md-typography-label-m) / var(--md-typography-line-height-small)
+    var(--md-typography-family-label);
   color: var(--ink);
 }
 .egne .sml table {
@@ -1041,8 +962,8 @@ table {
 .egne .sml tr.gruppe th {
   padding-top: 14px;
   font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-3);
+  font-weight: var(--md-typography-weight-medium);
+  color: var(--ink-2);
   border-bottom-color: var(--ink-3);
 }
 .egne .sml th,
@@ -1059,37 +980,24 @@ table {
   display: none;
 }
 .stage.slipp {
-  outline: 3px dashed var(--accent);
-  outline-offset: -3px;
-}
-#egnemerk {
-  color: var(--ink);
-  font-weight: 600;
-  font-size: 14px;
-  padding: 10px 12px;
-  border: 1px solid var(--ink-3);
-  border-radius: 6px;
-  background: var(--surface);
+  outline: var(--md-size-3) dashed var(--md-color-border-tertiary);
+  outline-offset: calc(-1 * var(--md-size-3));
 }
 #egnemerk:empty {
   display: none;
 }
-.tekknapp:hover,
-.tekknapp:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
 .notes h2 {
-  font: 600 18px/1.25 var(--display);
+  font: var(--md-typography-weight-regular) var(--md-typography-heading-s) / var(--md-typography-line-height-small)
+    var(--display);
 }
 .notes p {
   color: var(--ink-2);
   font-size: 15px;
   max-width: 62ch;
 }
-.notes a {
-  color: var(--accent);
-  text-underline-offset: 3px;
+.notes p .md-link {
+  padding: 0;
+  font-size: inherit;
 }
 .tw {
   overflow-x: auto;
@@ -1108,17 +1016,15 @@ td {
   border-bottom: 1px solid var(--line);
 }
 th {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-3);
+  font-size: var(--md-typography-label-s);
+  font-weight: var(--md-typography-weight-medium);
+  color: var(--ink);
 }
 td {
   color: var(--ink-2);
 }
 td:first-child {
-  font-weight: 500;
+  font-weight: var(--md-typography-weight-medium);
   color: var(--ink);
 }
 td.r,
@@ -1129,6 +1035,6 @@ th.r {
   padding-left: 12px;
 }
 td.feil {
-  color: var(--ink);
-  font-weight: 600;
+  color: var(--md-color-attention-error-primary);
+  font-weight: var(--md-typography-weight-medium);
 }

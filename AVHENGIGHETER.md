@@ -1,7 +1,7 @@
 # Biblioteker, tjenester og verktøy
 
 Dette dokumentet lister alt siden er avhengig av utenfor sin egen kode: biblioteker som lastes i nettleseren, tjenester den
-henter data fra, og verktøy som brukes under utvikling. Det følger koden slik den var i utgaven fra 7. oktober 2026.
+henter data fra, og verktøy som brukes under utvikling. Det følger koden slik den var i utgaven fra 8. oktober 2026.
 
 ## Rammeverk
 
@@ -18,10 +18,16 @@ er de samme som nettleseren laster. Det finnes ingen egen server og ingen databa
 
 Versjonene er låst i adressene i `index.html`. Sidens egen kode er til sammenligning rundt 75 kB pakket.
 
+## Designsystem
+
+Stilen fra Miljødirektoratets designsystem, `@miljodirektoratet/md-css` 6.32.0 (MIT), ligger sammen med siden i `md.css`
+(35 kB). Den lastes fra samme sted som siden, ikke fra en ekstern vert. Kilden er `miljodir/md-components` på GitHub.
+
 ## Skrifter
 
-Familjen Grotesk og Instrument Sans lastes fra Google Fonts (fonts.googleapis.com og fonts.gstatic.com). Begge har SIL Open
-Font License 1.1. Mangler de, faller siden tilbake på skriftene som finnes på enheten.
+Open Sans lastes fra Google Fonts (fonts.googleapis.com og fonts.gstatic.com) og har SIL Open Font License 1.1.
+Designsystemets overskriftsskrift, Sofia Pro, er lisensiert fra MyFonts og følger ikke med siden. Den brukes bare hvis den
+finnes på enheten. Mangler skriftene, faller siden tilbake på skriftene som finnes på enheten.
 
 ## Tjenester siden henter data fra
 
@@ -75,11 +81,12 @@ Ingen av disse følger med siden til brukeren.
 |---|---|---|
 | Playwright | Apache 2.0 | Regresjonstesten, som kjører siden i Chromium |
 | Prettier 3.9.9 | MIT | Formatering av koden |
+| @miljodirektoratet/md-css 6.32.0 | MIT | Kilden til `md.css` |
 | acorn, acorn-walk | MIT | Sjekken av skillet mellom regning og tegning |
 | eslint-scope | BSD 2-Clause | Sjekken av navnene i skriptene |
 | Python med NumPy, Pillow og Shapely | BSD og lignende | Bygging av oversiktsbildene |
 
 ## Planlagt
 
-Løsningen skal etter hvert over på React og Miljødirektoratets designsystem (`@miljodirektoratet/md-react` og
-`@miljodirektoratet/md-css`). Det er ikke tatt i bruk. Se README for hva som er kartlagt.
+Løsningen skal etter hvert over på React og komponentene i `@miljodirektoratet/md-react`. Stilen fra designsystemet er
+allerede i bruk, se over. Se README for hva som er kartlagt.
