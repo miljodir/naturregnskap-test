@@ -70,6 +70,8 @@ export default defineConfig({
     }
   ],
   define: { __UTGAVE__: JSON.stringify(UTGAVE) },
+  /* Kartbiblioteket og React er det meste av bygget. Siden har ingen deler som kan lastes senere. */
+  build: { chunkSizeWarningLimit: 1200 },
   /* md-react er CommonJS og ville fått Ariakits CommonJS-utgave, som laster react dynamisk og ikke lar seg pakke. */
   resolve: {
     alias: [{ find: /^@ariakit\/react$/, replacement: path.resolve('node_modules/@ariakit/react/esm/index.js') }]

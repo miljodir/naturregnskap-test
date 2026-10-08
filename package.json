@@ -6,10 +6,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "formater": "prettier --write public/js src verktoy/*.js vite.config.mjs",
-    "sjekk-format": "prettier --check public/js src verktoy/*.js vite.config.mjs",
+    "formater": "prettier --write src verktoy/*.js vite.config.mjs",
+    "sjekk-format": "prettier --check src verktoy/*.js vite.config.mjs",
     "test": "node verktoy/regresjon.js ut/ny --mot HEAD",
-    "sjekk": "node verktoy/sjekk-navn.js && node verktoy/sjekk-regning.js"
+    "sjekk": "node verktoy/sjekk-regning.js"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.1.2",
@@ -24,6 +24,9 @@
   "dependencies": {
     "@miljodirektoratet/md-css": "6.32.0",
     "@miljodirektoratet/md-react": "6.35.0",
+    "ol": "10.6.1",
+    "polygon-clipping": "0.15.7",
+    "proj4": "2.11.0",
     "react": "19.2.5",
     "react-dom": "19.2.5"
   }

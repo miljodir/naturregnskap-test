@@ -1,4 +1,31 @@
 /* Planlagt utbygging: kommuneplanen fra DiBK som kartlag, rutenettet for hele kommunen og arealtallene. */
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
+import {
+  UTM,
+  OPPLOSNINGER,
+  SVAKEST,
+  JOR,
+  NAT,
+  KL,
+  M,
+  app,
+  endret,
+  rgb,
+  hent,
+  gjeldende,
+  rutenett,
+  tegneflate,
+  tidSlutt
+} from './felles.js';
+import { plannett, lerret, TOM, kommuneSti, friskOpp } from './nett.js';
+import { klasseAv } from './farger.js';
+import { dagensKlasser, hentPlan, fargeleggFliser } from './fliser.js';
+import { tegnOversikt } from './oversikt.js';
+import { egenMaske, mine, utenPlan, leggInnEget } from './egne.js';
+import { NATURLAG, regnNatur } from './naturtema.js';
+import { regnGraa } from './graa.js';
+
 /* Kommuneplanen fra DiBK: områder satt av til framtidig bebyggelse, anlegg og samferdsel (arealformål 1000- og 2000-serien
    med arealbruksstatus 2), hentet som fliser i samme rutenett. For hver flis legges planen oppå dagens klasser i nettleseren,
    og bare natur og jordbruk som ligger i slike områder, tegnes. Zoomet ut brukes oversiktsbildet som dagens klasser:
@@ -162,7 +189,7 @@ async function lastPlanFlis(tile, src) {
   }
 }
 const nyPlanKilde = () =>
-  new ol.source.XYZ({
+  new XYZ({
     tileUrlFunction: planUrl,
     tileGrid: plannett,
     tilePixelRatio: 2,
@@ -170,8 +197,8 @@ const nyPlanKilde = () =>
     transition: 0,
     projection: UTM
   });
-const planLag = new ol.layer.Tile({ className: 'plan', source: nyPlanKilde(), visible: false });
-const tegnPlan = () => planLag.setSource(nyPlanKilde());
+export const planLag = new TileLayer({ className: 'plan', source: nyPlanKilde(), visible: false });
+export const tegnPlan = () => planLag.setSource(nyPlanKilde());
 /* Omtrentlig areal, regnet ut i nettleseren: planflisene på nivå 9 (21 meter per piksel) legges oppå dagens klasser,
    og pikslene telles. Med lagret oversiktsbilde gjelder det hele kommunen. Uten gjelder det den delen av kommunen
    nettleseren har hentet kart for, og tallene regnes ut på nytt hver gang det kommer mer kart.
@@ -364,7 +391,7 @@ async function regnPlan() {
     Z = 9;
   const sett = tilstand => {
     app.planTall = { tilstand };
-    visPlanTall();
+    endret();
   };
   if (!app.klipp || utenPlan())
     return sett('tom'); /* knappen for planlagt utbygging styrer bare kartlaget, ikke tallene */
@@ -372,7 +399,7 @@ async function regnPlan() {
   if (app.planRaster && app.planRaster.nr !== app.valgt.nr) app.planRaster = null;
   if (!app.ov) return sett(app.oversikter[app.valgt.nr] ? 'tom' : 'zoom');
   const dyn = !!app.ov.dynamisk,
-    sm = dyn ? samle : null,
+    sm = dyn ? M.samle : null,
     nr = app.valgt.nr,
     denne = app.ov;
   if (dyn && !sm) return;
@@ -423,77 +450,16 @@ async function regnPlan() {
   tidSlutt('plantall', tStart);
   app.planSum = { nr, nat: km2(app.planRaster.sum.rn), jor: km2(app.planRaster.sum.rj), delvis: dyn, egne: E.length };
   sett('ok');
-  visUtvikling();
-  visEgne();
-}
-/* Tegner tallene for planlagt utbygging i tallpanelet, fra planTall og planRaster. */
-function visPlanTall() {
-  const tn = $('tall-pnat'),
-    tj = $('tall-pjor'),
-    note = $('tallnote'),
-    tilstand = app.planTall ? app.planTall.tilstand : 'tom',
-    R = gjeldende(app.planRaster);
-  if (tilstand !== 'ok' || !R) {
-    tn.textContent = tj.textContent = tilstand === 'regner' ? 'regner …' : '';
-    note.textContent =
-      tilstand === 'zoom'
-        ? 'Zoom inn i kartet for å få et anslag. Arealet regnes ut for den delen av kommunen nettleseren har hentet kart for.'
-        : tilstand === 'feil'
-          ? 'Arealet kunne ikke regnes ut.'
-          : '';
-    return;
-  }
-  const m = OPPLOSNINGER[R.z] / 2,
-    km2 = v => (v * m * m) / 1e6,
-    pst = (a, b) => (b ? nf((a / b) * 100) : '0'),
-    der = R.delvis ? ' i det hentede kartet' : '';
-  const n = R.n,
-    { rn, rj } = R.sum,
-    basis = R.basis,
-    antall = R.antallEgne;
-  $('egnemerk').textContent = !antall
-    ? ''
-    : `Tallene for planlagt utbygging inkluderer ${antall === 1 ? 'ett eget område' : antall + ' egne områder'}. ${ingenPlan() ? 'Kommunen har ingen kommuneplan hos DiBK.' : basis.rn + basis.rj ? `Kommuneplanen alene: ca. ${iTekst(km2(basis.rn))} natur og ca. ${iTekst(km2(basis.rj))} jordbruk.` : 'Kommuneplanen alene setter ikke av natur eller jordbruk til utbygging' + der + '.'}`;
-  tn.textContent = `ca. ${iTekst(km2(rn))}, ${pst(rn, n.nat)} % av naturen${der}${antall ? '' : ` (${iTekst(km2(n.pnat))} med smale striper)`}`;
-  tj.textContent = `ca. ${iTekst(km2(rj))}, ${pst(rj, n.jor)} % av jordbruket${der}${antall ? '' : ` (${iTekst(km2(n.pjor))} med smale striper)`}`;
-  const felles =
-    'Smale striper er felt som ikke er bredere enn rundt 40 meter noe sted, ofte langs eksisterende bebyggelse. Smale deler av et større felt regnes med. Stripene vises ikke i kartet med mindre du slår dem på under Tekniske valg. Anslag til illustrasjon, ikke offisiell statistikk.';
-  if (R.delvis) {
-    const a = km2(n.beb + n.jor + n.nat);
-    note.textContent = `Gjelder bare den delen av kommunen nettleseren har hentet kart for: ca. ${iTekst(a)} land${app.ssbSum ? ` av ${iTekst(app.ssbSum)} (${nf(Math.min(100, (a / app.ssbSum) * 100))} %)` : ''}. Zoom inn og flytt kartet for å få med mer. Regnet ut i nettleseren med piksler på ${R.rute} meter. ${felles}`;
-  } else
-    note.textContent = `Regnet ut i nettleseren fra ${R.fliser} kartfliser med piksler på ${R.rute} meter. ${felles}`;
 }
 /* Ikke alle kommuner har kommuneplanen sin hos DiBK. Ett lite bilde av hele kommunen viser hvor mye av flaten planlaget dekker.
    Langs grensen stikker naboenes planer litt inn, så under 15 prosent regnes som at kommunen ikke har plan der.
    Finnes det en plan, hentes navnet på den med ett oppslag i et punkt midt i det dekkede området. */
 
-const ingenPlan = () =>
+export const ingenPlan = () =>
   !!app.planInfo && !!app.valgt && app.planInfo.nr === app.valgt.nr && app.planInfo.tilstand === 'ingen';
-function visPlanInfo() {
-  const s = $('planstatus'),
-    pi = $('planinfo'),
-    i = gjeldende(app.planInfo),
-    ingen = ingenPlan(),
-    navn = app.valgt ? app.valgt.navn : '';
-  s.className = ingen ? 'md-alert-message md-alert-message--warning md-alert-message--fullWidth' : '';
-  $('planknapp').querySelector('.km').textContent = ingen ? 'ingen plan' : '';
-  pi.hidden = !ingen;
-  $('linje-pnat').hidden = $('linje-pjor').hidden = utenPlan();
-  pi.textContent = ingen ? `DiBK har ingen kommuneplan for ${navn}. Planlagt utbygging vises derfor ikke.` : '';
-  s.textContent = !i
-    ? ''
-    : i.tilstand === 'sjekker'
-      ? 'Sjekker om DiBK har en kommuneplan for kommunen …'
-      : i.tilstand === 'feil'
-        ? 'Fikk ikke sjekket om DiBK har en kommuneplan for kommunen.'
-        : ingen
-          ? `DiBK har ingen kommuneplan for ${navn}. Planlagt utbygging kan derfor ikke vises eller regnes ut.`
-          : `Kommuneplan hentet fra DiBK${i.kilde ? ': ' + i.kilde : ''}.${i.dekning < 0.6 ? ` Planen dekker ca. ${Math.round(i.dekning * 100)} % av kommunens flate, sjø medregnet.` : ''}`;
-}
-async function sjekkPlan(k, geom, mitt) {
+export async function sjekkPlan(k, geom, mitt) {
   app.planInfo = { nr: k.nr, tilstand: 'sjekker' };
-  visPlanInfo();
+  endret();
   try {
     const { res, w, h, u } = rutenett(geom.getExtent(), 256);
     const felles = {
@@ -513,18 +479,18 @@ async function sjekkPlan(k, geom, mitt) {
       false,
       true
     );
-    if (mitt !== valgNr) return;
+    if (mitt !== M.valgNr) return;
     const a = tegneflate(w, h),
       b = tegneflate(w, h);
     a.drawImage(await createImageBitmap(new Blob([buf])), 0, 0, w, h);
     kommuneSti(b, geom, u, 1 / res);
     b.fill('evenodd');
     const P = a.getImageData(0, 0, w, h).data,
-      M = b.getImageData(0, 0, w, h).data,
+      Mk = b.getImageData(0, 0, w, h).data,
       treff = [];
     let inne = 0;
     for (let q = 0; q < w * h; q++)
-      if (M[4 * q + 3] >= 128) {
+      if (Mk[4 * q + 3] >= 128) {
         inne++;
         if (P[4 * q + 3] >= 100) treff.push(q);
       }
@@ -556,30 +522,43 @@ async function sjekkPlan(k, geom, mitt) {
           kilde = `plan ${f['arealplanId.planidentifikasjon']}${vert ? ' fra ' + vert : ''}${d ? `, kopiert til DiBK ${d[3]}.${d[2]}.${d[1]}` : ''}`;
         }
       } catch (e) {}
-    if (mitt !== valgNr) return;
+    if (mitt !== M.valgNr) return;
     app.planInfo = { nr: k.nr, tilstand: dekning < 0.15 ? 'ingen' : 'ok', dekning, kilde };
   } catch (e) {
-    if (mitt !== valgNr) return;
+    if (mitt !== M.valgNr) return;
     app.planInfo = { nr: k.nr, tilstand: 'feil' };
   }
-  visPlanInfo();
+  endret();
   visPlan();
-  visUtvikling();
   if (ingenPlan()) nyttSlor();
 }
-const regnAlt = () =>
+export const regnAlt = () =>
   regnPlan().then(() => {
     NATURLAG.forEach(regnNatur);
     regnGraa();
   }); /* påvirkningen på naturlagene følger plantallene */
-const visPlanLag = () => planLag.setVisible(app.planPaa && !!app.klipp && !utenPlan());
-const visPlan = () => {
+export const visPlanLag = () => planLag.setVisible(app.planPaa && !!app.klipp && !utenPlan());
+export const visPlan = () => {
   visPlanLag();
+  endret();
   regnAlt();
 };
-const nyttSlor = () => {
+export const nyttSlor = () => {
   if (KL.some(([id]) => !app.vis[id])) {
     tegnOversikt();
     fargeleggFliser();
   }
 }; /* sløret over skjulte klasser følger planlaget */ /* resten av kartet står urørt når laget slås på */
+/* Knappen for planlagt utbygging i tallpanelet: slår kartlaget av og på. */
+export function byttPlanLag() {
+  app.planPaa = !app.planPaa;
+  visPlanLag();
+  nyttSlor();
+  endret();
+}
+/* Valget om smale striper under Tekniske valg. */
+export function visSmaleStriper(paa) {
+  app.visSmale = paa;
+  friskOpp(planLag);
+  endret();
+}

@@ -1,17 +1,9 @@
 /* Farger: stilen som sendes til NIBIO, tolking av fargene i svaret, og fargelegging i nettleseren. */
+import { ALLE, DATAFARGE, app, rgb, tidSlutt } from './felles.js';
+import { ingenPlan } from './plan.js';
+
 /* Stilen som sendes til NIBIO: seks regler med rene farger. Den er lik i alle kall. */
-/* Fargene leses fra stilarket én gang og huskes. Å spørre stilarket for hver flis tvinger nettleseren
-   til å regne ut stiler på nytt midt i tegningen. */
-const fargeMinne = {},
-  rgbMinne = {};
-const farge = id =>
-  fargeMinne[id] ||
-  (fargeMinne[id] = getComputedStyle(document.documentElement)
-    .getPropertyValue('--' + id)
-    .trim());
-const rgb = id =>
-  rgbMinne[id] || (rgbMinne[id] = (v => [0, 2, 4].map(i => parseInt(v.substr(i, 2), 16)))(farge(id).replace('#', '')));
-const SLD = (() => {
+export const SLD = (() => {
   const hex = f => '#' + f.map(v => v.toString(16).padStart(2, '0')).join('');
   const regler = ALLE.map(([id, , verdier]) => {
     let f = verdier
@@ -63,18 +55,18 @@ const LA = new Uint8Array(32768),
   }
 }
 const oppslag = (r, g, b) => ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
-const klasseAv = (r, g, b) => {
+export const klasseAv = (r, g, b) => {
   const q = oppslag(r, g, b);
   return LT[q] >= 128 ? LA[q] : LB[q];
 }; /* klassen det er mest av i pikselen */
 /* Fargene som brukes nå. En skjult klasse er gjennomsiktig. Unntaket er når planlagt utbygging vises: da får skjulte klasser et lyst slør,
    så bakgrunnskartet dempes der og de mørke planfeltene synes tydelig også når de står alene. Fjerde tall er hvor tett fargen er. */
 const SLOR = 0.82;
-const klassefarger = () => {
+export const klassefarger = () => {
   const slor = app.planPaa && !ingenPlan() ? [...rgb('slor'), SLOR] : null;
   return ALLE.map(([id]) => (app.vis[id] ? rgb(id) : slor));
 };
-function tilFarge(r, g, b, a, F) {
+export function tilFarge(r, g, b, a, F) {
   if (!a) return [0, 0, 0, 0];
   const q = oppslag(r, g, b),
     A = F[LA[q]],
@@ -108,7 +100,7 @@ function pngDel(type, data) {
   dv.setUint32(8 + data.length, (c ^ 0xffffffff) >>> 0);
   return o;
 }
-async function fargeleggBlob(buf) {
+export async function fargeleggBlob(buf) {
   const t0 = performance.now(),
     F = klassefarger(),
     u = new Uint8Array(buf),
