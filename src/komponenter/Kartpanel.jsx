@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { app, endret, dekar, nf, RUTE, iTekst, rolig } from '../motor/felles.js';
+import { app, dekar, nf, RUTE, iTekst, rolig } from '../motor/felles.js';
 import { ui, plasserBytt, byttTil } from '../motor/kart.js';
 import { startKart } from '../motor/start.js';
 import { fjernMerket } from '../motor/naturtema.js';
@@ -37,11 +37,11 @@ export function Kartpanel() {
   }, []);
   const tilListen = () => {
     if (!app.vist) return;
-    const { t, liId } = app.vist;
-    app.apne[t.id] = true;
-    endret();
+    const { t, liId } = app.vist,
+      blokk = document.getElementById(t.id + 'blokk');
+    if (blokk) blokk.open = true;
     setTimeout(() => {
-      const li = document.getElementById(liId) || document.getElementById(t.id + 'blokk');
+      const li = document.getElementById(liId) || blokk;
       if (!li) return;
       li.scrollIntoView({ behavior: rolig() ? 'auto' : 'smooth', block: 'center' });
       const kn = li.querySelector('button');

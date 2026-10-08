@@ -3,6 +3,7 @@
 export { default as MdButton } from '@miljodirektoratet/md-react/dist/button/MdButton';
 export { default as MdCheckbox } from '@miljodirektoratet/md-react/dist/formElements/MdCheckbox';
 export { default as MdLink } from '@miljodirektoratet/md-react/dist/link/MdLink';
+export { default as MdAccordionItem } from '@miljodirektoratet/md-react/dist/accordion/MdAccordionItem';
 
 /* En celle i en tabell, med et mindre tall under hvis det er oppgitt. */
 export const Celle = ({ type: T = 'td', tekst, under, ...resten }) => (

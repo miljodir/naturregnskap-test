@@ -1,4 +1,4 @@
-import { KL, app, endret, nf, dekar, iTekst, gjeldende, OPPLOSNINGER } from '../motor/felles.js';
+import { KL, app, nf, dekar, iTekst, gjeldende, OPPLOSNINGER } from '../motor/felles.js';
 import { byttKlasse } from '../motor/start.js';
 import { ingenPlan, byttPlanLag } from '../motor/plan.js';
 import { utenPlan } from '../motor/egne.js';
@@ -7,47 +7,40 @@ import { NATURLAG, byttNatur } from '../motor/naturtema.js';
 import { byttInon } from '../motor/inon.js';
 import { byttGraa } from '../motor/graa.js';
 import { NaturBlokk, InonBlokk, GraaBlokk } from './Tema.jsx';
-import { Celle, Rute } from './deler.jsx';
+import { Celle, Rute, MdAccordionItem } from './deler.jsx';
 
-/* Én rad per tema, bygd likt: fargeruten viser temaet i kartet, og resten av raden åpner detaljene. Raden svarer på det samme
-   for alle temaene: hvor mye som finnes i kommunen, hvor stor del av landarealet det er, og hvor mye planlagt utbygging som ligger innenfor. */
+/* Én rad per tema, bygd likt: fargeruten viser temaet i kartet, og resten av raden er en MdAccordionItem som åpner detaljene.
+   Raden svarer på det samme for alle temaene: hvor mye som finnes i kommunen, hvor stor del av landarealet det er, og hvor mye
+   planlagt utbygging som ligger innenfor. Fargeruten ligger utenfor overskriften, så den ikke også åpner detaljene. */
 function TemaRad({ id, navn, klasse, paa, vedBryter, tall, children }) {
-  const apen = !!app.apne[id];
   return (
-    <>
-      <div className={`row naturrad ${klasse}${apen ? ' apen' : ''}`} style={{ '--c': `var(--${id})` }}>
-        <button
-          type="button"
-          className="lagknapp"
-          id={id + 'knapp'}
-          aria-pressed={String(paa)}
-          aria-label={`Vis ${navn.toLowerCase()} i kartet`}
-          onClick={vedBryter}
-        >
-          <span className="sw"></span>
-        </button>
-        <button
-          type="button"
-          className="apne"
-          id={id + 'apne'}
-          aria-expanded={String(apen)}
-          aria-controls={id + 'blokk'}
-          onClick={() => {
-            app.apne[id] = !apen;
-            endret();
-          }}
-        >
-          <span className="nm">{navn}</span>
-          <span className="km">{tall.km}</span>
-          <span className="pc">{tall.pc}</span>
-          <span className="un">{tall.un}</span>
-          <span className="mer">{apen ? 'Skjul' : 'Detaljer'}</span>
-        </button>
-      </div>
-      <div className="naturblokk" id={id + 'blokk'} hidden={!apen} role="region" aria-label={navn}>
-        {children}
-      </div>
-    </>
+    <div className={`row naturrad ${klasse}`} style={{ '--c': `var(--${id})` }}>
+      <button
+        type="button"
+        className="lagknapp"
+        id={id + 'knapp'}
+        aria-pressed={String(paa)}
+        aria-label={`Vis ${navn.toLowerCase()} i kartet`}
+        onClick={vedBryter}
+      >
+        <span className="sw"></span>
+      </button>
+      <MdAccordionItem
+        id={id + 'blokk'}
+        theme="add"
+        closeButtonText={`Lukk ${navn.toLowerCase()}`}
+        headerContent={
+          <div className="apne" id={id + 'apne'}>
+            <span className="nm">{navn}</span>
+            <span className="km">{tall.km}</span>
+            <span className="pc">{tall.pc}</span>
+            <span className="un">{tall.un}</span>
+          </div>
+        }
+      >
+        <div className="naturblokk">{children}</div>
+      </MdAccordionItem>
+    </div>
   );
 }
 

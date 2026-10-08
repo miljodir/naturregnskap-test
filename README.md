@@ -100,7 +100,8 @@ Siden følger Miljødirektoratets designsystem (<https://design.miljodirektorate
 - `src/main.jsx` henter hele md-css. `src/stil.css` lastes etter og bruker designsystemets variabler (`--md-...`) til tekst,
   flater, kanter, fokus og skrift. Sidens egne navn (`--ink`, `--surface`, `--line` osv.) peker dit, så resten av stilen
   følger med.
-- I bruk: `MdSelect` for fylke, `MdComboBox` for kommune (man kan skrive for å filtrere), `MdButton`, `MdLink` og
+- I bruk: `MdSelect` for fylke, `MdComboBox` for kommune (man kan skrive for å filtrere), `MdAccordionItem` for detaljene i
+  temaradene, `MdButton`, `MdLink` og
   `MdCheckbox`. Meldingene om kommuneplan og egne områder bruker klassene til `MdAlertMessage`, fordi de har ren tekst uten
   ikon. Et valg som er slått på (`aria-pressed`), vises som primærknapp.
 - md-react er CommonJS. Komponentene hentes derfor fra hver sin fil (`@miljodirektoratet/md-react/dist/button/MdButton`),
@@ -115,7 +116,7 @@ Siden følger Miljødirektoratets designsystem (<https://design.miljodirektorate
 
 ## Videre
 
-- Flere deler kan bruke md-react direkte: detaljene i temaradene (`MdAccordion`), lag av og på (`MdToggle`,
+- Flere deler kan bruke md-react direkte: lag av og på (`MdToggle`,
   `MdFilterChip`), opplasting (`MdFileUpload`), meldinger med ikon (`MdAlertMessage`), venting (`MdLoadingSpinner`) og
   hjelpetekst (`MdHelpText`, `MdTooltip`). Det endrer utseendet, så regresjonstesten må da få nye referansebilder og
   selektorer.

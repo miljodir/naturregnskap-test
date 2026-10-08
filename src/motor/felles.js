@@ -91,7 +91,6 @@ export const app = {
   graaKryss: null /* planlagt utbygging krysset med grått areal */,
   slorPaa: true /* om det som ikke er kartlagt, får et slør når verdsatt natur vises */,
   vist: null /* området som er valgt fra en liste og markert i kartet: { t, liId, navn } */,
-  apne: {} /* temaradene som er åpnet i tallpanelet, etter id */,
   /* Det som vises rundt kartet */
   laster: false /* om det hentes kart nå */,
   ute: false /* om kartet er zoomet ut der det ikke finnes noe oversiktsbilde */,

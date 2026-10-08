@@ -121,6 +121,28 @@ async function nySide(nettleser, kilde, feil) {
           .join('\n'),
       sel
     );
+  /* Raden for et tema, uten «Detaljer» og «Skjul», som eldre utgaver hadde i raden. */
+  p.rad = async sel => (await p.tekst(sel)).replace(/ \| (Detaljer|Skjul)$/, '');
+  /* Detaljene for et tema, også når de er lukket: en MdAccordionItem (details), eller en skjult blokk i eldre utgaver. */
+  p.blokk = id =>
+    p.evaluate(id => {
+      /* Designsystemet åpner detaljene med en overgang. Uten denne er innholdet ikke tegnet ennå når teksten leses. */
+      if (!document.getElementById('uten-overgang'))
+        document.head.insertAdjacentHTML(
+          'beforeend',
+          '<style id="uten-overgang">details::details-content { transition: none !important; }</style>'
+        );
+      const b = document.getElementById(id),
+        innhold = b.querySelector('.naturblokk') || b,
+        apen = b.open,
+        skjult = b.hidden;
+      b.open = true;
+      b.hidden = false;
+      const tekst = innhold.innerText.replace(/\s*\n\s*/g, ' | ').trim();
+      b.open = apen;
+      b.hidden = skjult;
+      return tekst;
+    }, id);
   return p;
 }
 
@@ -140,15 +162,8 @@ async function tallpanel(p) {
   ut.utvsum = await p.tekst('#utvsum');
   ut.vann = await p.tekst('#tegn2');
   for (const t of TEMA) {
-    ut['rad-' + t] = await p.tekst(`#${t}apne`);
-    ut['blokk-' + t] = await p.evaluate(id => {
-      const b = document.getElementById(id);
-      const skjult = b.hidden;
-      b.hidden = false;
-      const tekst = b.innerText.replace(/\s*\n\s*/g, ' | ').trim();
-      b.hidden = skjult;
-      return tekst;
-    }, t + 'blokk');
+    ut['rad-' + t] = await p.rad(`#${t}apne`);
+    ut['blokk-' + t] = await p.blokk(t + 'blokk');
   }
   return ut;
 }
@@ -244,7 +259,7 @@ const SCENARIER = {
       ...(await egne(p)),
       natur: await p.tekst('#tall-pnat'),
       utvikling: await p.tabell('#utvtab'),
-      graa: await p.tekst('#graaapne')
+      graa: await p.rad('#graaapne')
     };
     await p.locator('#kartflate').scrollIntoViewIfNeeded();
     await R.bilde('7-eget');
@@ -267,8 +282,8 @@ const SCENARIER = {
       jordbruk: await p.tekst('#tall-pjor'),
       egnemerk: await p.tekst('#egnemerk'),
       utvikling: await p.tabell('#utvtab'),
-      verdi: await p.tekst('#verdiapne'),
-      graa: await p.tekst('#graablokk')
+      verdi: await p.rad('#verdiapne'),
+      graa: await p.blokk('graablokk')
     };
     await p.flytt(270500, 7031500, 84.6);
     await p.locator('#kartflate').scrollIntoViewIfNeeded();
