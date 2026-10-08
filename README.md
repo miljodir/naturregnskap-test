@@ -4,7 +4,7 @@ En statisk nettside som viser arealet i en kommune delt i bebygd, jordbruk og na
 utbygging, og hvordan det treffer verneområder, villrein, verdsatt natur, inngrepsfri natur og grått areal. Alt hentes
 direkte fra åpne tjenester i nettleseren. Det finnes ingen egen server og ikke noe byggesteg.
 
-Siden ligger på <https://eirikvk.github.io/Publicdemorepo/>. Legg til `?teknisk` i adressen for å se utgave, måling og
+Siden ligger på <https://miljodir.github.io/naturregnskap-test/>. Legg til `?teknisk` i adressen for å se utgave, måling og
 kall-logg.
 
 Dette er en prototype til illustrasjon. Kartet og arealene som regnes ut i nettleseren, er omtrentlige. Grunnkartet fra

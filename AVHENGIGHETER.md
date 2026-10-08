@@ -44,7 +44,7 @@ kommuner (`oversikt/`, laget fra NIBIOs grunnkart).
 
 ## Drift
 
-Siden ligger på GitHub Pages og legges ut ved push til `main` i repoet `eirikvk/Publicdemorepo`.
+Siden ligger på GitHub Pages og legges ut ved push til `main` i repoet `miljodir/naturregnskap-test`.
 
 ## Vilkår for dataene
 
