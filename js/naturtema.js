@@ -185,7 +185,7 @@ const NATURLAG = [
   t.rad = r.rad;
   t.knapp = r.knapp;
   const b = (t.blokk = r.blokk);
-  b.innerHTML = `<p id="${t.id}sum"></p><ul id="${t.id}tegn"></ul><div id="${t.id}helhet" class="helhet" hidden></div><p id="${t.id}merk"></p>${t.dekning ? `<label class="valg" for="${t.id}slor" hidden><input type="checkbox" id="${t.id}slor" checked>Legg et lyst slør over det som ikke er kartlagt, når laget er på.</label>` : ''}<p id="${t.id}plan" role="status"></p><p id="${t.id}gap" role="status"></p><ul id="${t.id}liste"></ul><p class="hint"></p>`;
+  b.innerHTML = `<p id="${t.id}sum"></p><ul id="${t.id}tegn"></ul><div id="${t.id}helhet" class="helhet" hidden></div><p id="${t.id}merk"></p>${t.dekning ? `<div class="valg md-checkbox" hidden><input class="md-checkbox__input" type="checkbox" id="${t.id}slor" checked><label class="md-checkbox__label" for="${t.id}slor"><span class="md-checkbox__labelText">Legg et lyst slør over det som ikke er kartlagt, når laget er på.</span></label></div>` : ''}<p id="${t.id}plan" role="status"></p><p id="${t.id}gap" role="status"></p><ul id="${t.id}liste"></ul><p class="hint"></p>`;
   b.querySelector('.hint').textContent =
     `Kilde: ${t.kildetekst}. Arealet gjelder den delen av hvert område som ligger i kommunen, og er regnet ut i nettleseren.${t.vann ? ' Verneområder kan også ligge i sjø og innsjøer, så andelen av landarealet er et omtrentlig mål.' : ''}`;
   if (t.dekning)
@@ -678,7 +678,7 @@ function visNatur(t) {
   if (t.dekning) {
     const kartlagt = ok && !!D.ekstra && D.ekstra.km2 > 0;
     dekLag.setVisible(t.paa && app.slorPaa && !!app.klipp && kartlagt);
-    t.blokk.querySelector('label').hidden = !kartlagt;
+    t.blokk.querySelector('.valg').hidden = !kartlagt;
     el('tegn').textContent = el('gap').textContent = '';
   }
   const rad = n => t.rad.querySelector('.' + n),
@@ -875,6 +875,7 @@ function visNatur(t) {
     gjor.className = 'gjor';
     const kn = document.createElement('button');
     kn.type = 'button';
+    kn.className = 'md-button md-button--secondary md-button--small';
     kn.innerHTML =
       '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14.5s4.5-4.2 4.5-7.7a4.5 4.5 0 0 0-9 0c0 3.5 4.5 7.7 4.5 7.7z"/><circle cx="8" cy="6.7" r="1.6"/></svg>Vis i kartet';
     kn.setAttribute('aria-label', `Vis ${x.navn} i kartet`);
@@ -882,6 +883,7 @@ function visNatur(t) {
     gjor.appendChild(kn);
     if (x.url) {
       const l = document.createElement('a');
+      l.className = 'md-button md-button--secondary md-button--small';
       l.href = x.url;
       l.target = '_blank';
       l.rel = 'noopener';

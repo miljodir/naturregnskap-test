@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bebygd, jordbruk, natur – direkte</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@10.6.1/ol.css">
-<link rel="stylesheet" href="stil.css?v=202610070745">
+<link rel="stylesheet" href="md.css?v=202610081055">
+<link rel="stylesheet" href="stil.css?v=202610081055">
 </head>
 <body>
 <div class="wrap">
@@ -28,24 +29,24 @@
       <div class="stage">
         <div id="kartflate"></div>
         <div class="chip" id="laster" hidden>Henter kart …</div>
-        <button type="button" class="bytt" id="byttknapp" hidden></button>
+        <button type="button" class="bytt md-button" id="byttknapp" hidden></button>
         <div class="chip" id="zoomet" role="status" hidden>Siden er forstørret. Knip sammen for å zoome ut, så virker kartet igjen.</div>
-        <div class="chip" id="vistmerke" hidden><b></b><button type="button" id="vistliste">Til listen</button><button type="button" id="vistlukk" aria-label="Fjern markeringen i kartet">×</button></div>
+        <div class="chip" id="vistmerke" hidden><b></b><button type="button" class="md-button md-button--tertiary md-button--small" id="vistliste">Til listen</button><button type="button" class="md-button md-button--tertiary md-button--small" id="vistlukk" aria-label="Fjern markeringen i kartet">×</button></div>
         <div class="chip" id="ute" hidden>Zoom inn for å se arealklassene. NIBIO tegner grunnkartet først fra 1:50 000.</div>
       </div>
       <div class="mapfoot">
-        <div id="planinfo" role="status" hidden></div>
+        <div id="planinfo" class="md-alert-message md-alert-message--warning md-alert-message--fullWidth" role="status" hidden></div>
         <div class="probe" id="probe">Trykk i kommunen for å se klassen, eller utenfor for å bytte kommune.</div>
         <div id="siste" class="tek"></div>
       </div>
       <div class="egne" id="egnedel">
         <div class="knapper">
-          <button type="button" class="tekknapp" id="tegnknapp">Tegn eget område</button>
-          <button type="button" class="tekknapp" id="lastknapp">Last opp plan</button>
+          <button type="button" class="md-button md-button--secondary" id="tegnknapp">Tegn eget område</button>
+          <button type="button" class="md-button md-button--secondary" id="lastknapp">Last opp plan</button>
           <input type="file" id="planfil" accept=".geojson,.json,application/geo+json,application/json" hidden>
-          <button type="button" class="tekknapp" id="tegnangre" hidden>Angre punkt</button>
-          <button type="button" class="tekknapp" id="tegnferdig" hidden>Ferdig</button>
-          <button type="button" class="tekknapp" id="tegnavbryt" hidden>Avbryt</button>
+          <button type="button" class="md-button md-button--secondary" id="tegnangre" hidden>Angre punkt</button>
+          <button type="button" class="md-button" id="tegnferdig" hidden>Ferdig</button>
+          <button type="button" class="md-button md-button--tertiary" id="tegnavbryt" hidden>Avbryt</button>
         </div>
         <p class="hint" id="tegnhjelp">Tegn et område i kartet, eller last opp en plan som GeoJSON i samme format som DiBKs nedlasting av plandata. Innenfor flatene erstatter tegningen eller filen kommuneplanen. Ingenting lagres eller sendes fra nettleseren.</p>
         <p id="egnestatus" role="status"></p>
@@ -78,7 +79,7 @@
         <p id="planstatus" role="status"></p>
         <div id="linje-pnat"><i style="background:var(--pnat)"></i><p>Natur som kommuneplanen setter av til framtidig utbygging <b id="tall-pnat"></b></p></div>
         <div id="linje-pjor"><i style="background:var(--pjor)"></i><p>Jordbruk som kommuneplanen setter av til framtidig utbygging <b id="tall-pjor"></b></p></div>
-        <p id="egnemerk" role="status"></p>
+        <p id="egnemerk" class="md-alert-message md-alert-message--fullWidth" role="status"></p>
         <p id="tallnote"></p>
       </div>
       <div class="utvikling" id="utvikling" hidden>
@@ -124,15 +125,15 @@
       <h2>Om siden</h2>
       <p>Alt hentes direkte i nettleseren når du velger kommune: grensen fra Kartverket, arealtallene fra SSB og kartet fra NIBIO. Bare listen over fylker og kommuner ligger lagret sammen med siden.</p>
       <p id="omoversikt" hidden></p>
-      <p>Hvordan hvert tall er hentet eller regnet ut, står i <a href="METODE.html">metodebeskrivelsen</a>. Biblioteker og tjenester siden bruker, står i <a href="AVHENGIGHETER.html">oversikten over avhengigheter</a>.</p>
+      <p>Hvordan hvert tall er hentet eller regnet ut, står i <a class="md-link" href="METODE.html">metodebeskrivelsen</a>. Biblioteker og tjenester siden bruker, står i <a class="md-link" href="AVHENGIGHETER.html">oversikten over avhengigheter</a>.</p>
       <p>Kart: Nasjonalt grunnkart for arealanalyse, årsversjon 2025, NIBIO. Tall: SSB, tabell 09594. Kommuneplan: DiBK. Verneområder, villreinområder, naturtyper og inngrepsfri natur: Miljødirektoratet. Grått areal: Miljødirektoratet, Kartverket, NIBIO og SSB. Grenser og bakgrunnskart: Kartverket.</p>
     </section>
     <section>
       <h2>Tekniske valg</h2>
-      <button type="button" class="tekknapp" id="tekknapp" aria-expanded="false">Vis teknisk informasjon</button>
+      <button type="button" class="md-button md-button--secondary" id="tekknapp" aria-expanded="false">Vis teknisk informasjon</button>
       <p id="versjon" class="tek"></p>
       <p id="maaling" class="tek" role="status">Flytt kartet for å måle hvor jevnt det går.</p>
-      <label class="valg" for="smale"><input type="checkbox" id="smale">Vis smale striper i planlagt utbygging. Det er felt som ikke er bredere enn rundt 40 meter noe sted, ofte grøntdrag og kanter langs eksisterende bebyggelse. Smale deler av et større felt vises alltid.</label>
+      <div class="valg md-checkbox"><input class="md-checkbox__input" type="checkbox" id="smale"><label class="md-checkbox__label" for="smale"><span class="md-checkbox__labelText">Vis smale striper i planlagt utbygging. Det er felt som ikke er bredere enn rundt 40 meter noe sted, ofte grøntdrag og kanter langs eksisterende bebyggelse. Smale deler av et større felt vises alltid.</span></label></div>
     </section>
   </div>
 </div>
@@ -140,17 +141,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ol@10.6.1/dist/ol.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.min.js"></script>
-<script src="js/felles.js?v=202610070745"></script>
-<script src="js/farger.js?v=202610070745"></script>
-<script src="js/fliser.js?v=202610070745"></script>
-<script src="js/oversikt.js?v=202610070745"></script>
-<script src="js/plan.js?v=202610070745"></script>
-<script src="js/naturtema.js?v=202610070745"></script>
-<script src="js/inon.js?v=202610070745"></script>
-<script src="js/graa.js?v=202610070745"></script>
-<script src="js/egne.js?v=202610070745"></script>
-<script src="js/kart.js?v=202610070745"></script>
-<script src="js/tall.js?v=202610070745"></script>
-<script src="js/start.js?v=202610070745"></script>
+<script src="js/felles.js?v=202610081055"></script>
+<script src="js/farger.js?v=202610081055"></script>
+<script src="js/fliser.js?v=202610081055"></script>
+<script src="js/oversikt.js?v=202610081055"></script>
+<script src="js/plan.js?v=202610081055"></script>
+<script src="js/naturtema.js?v=202610081055"></script>
+<script src="js/inon.js?v=202610081055"></script>
+<script src="js/graa.js?v=202610081055"></script>
+<script src="js/egne.js?v=202610081055"></script>
+<script src="js/kart.js?v=202610081055"></script>
+<script src="js/tall.js?v=202610081055"></script>
+<script src="js/start.js?v=202610081055"></script>
 </body>
 </html>

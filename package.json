@@ -6,9 +6,11 @@
     "formater": "prettier --write js stil.css verktoy/*.js",
     "sjekk-format": "prettier --check js stil.css verktoy/*.js",
     "test": "node verktoy/regresjon.js ut/ny --mot HEAD",
-    "sjekk": "node verktoy/sjekk-navn.js && node verktoy/sjekk-regning.js"
+    "sjekk": "node verktoy/sjekk-navn.js && node verktoy/sjekk-regning.js",
+    "md-css": "node verktoy/md-css.js"
   },
   "devDependencies": {
+    "@miljodirektoratet/md-css": "6.32.0",
     "acorn": "^8.0.0",
     "acorn-walk": "^8.0.0",
     "eslint-scope": "^9.0.0",

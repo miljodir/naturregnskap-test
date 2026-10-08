@@ -378,7 +378,7 @@ function visEgne() {
   const knapp = (tekst, vedTrykk) => {
     const b = document.createElement('button');
     b.type = 'button';
-    b.className = 'tekknapp';
+    b.className = 'md-button md-button--secondary md-button--small';
     b.textContent = tekst;
     b.addEventListener('click', vedTrykk);
     return b;

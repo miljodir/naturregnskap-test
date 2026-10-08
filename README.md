@@ -15,7 +15,8 @@ NIBIO er lisensiert «Norge digitalt begrenset».
 | Fil | Innhold |
 |---|---|
 | `index.html` | Sidens innhold og rekkefølgen skriptene lastes i |
-| `stil.css` | All stil, med fargene som variabler øverst |
+| `md.css` | Delene av Miljødirektoratets designsystem siden bruker, laget av `verktoy/md-css.js` |
+| `stil.css` | Sidens egen stil, bygd på designsystemets variabler, med kartfargene øverst |
 | `js/felles.js` | Adresser, rutenett, klasser, formatering av tall, kall-logg, henting med minne og små hjelpere |
 | `js/farger.js` | Stilen som sendes til NIBIO, tolking av fargene i svaret og fargelegging i nettleseren |
 | `js/fliser.js` | Grunnkartet som kartfliser, køen for kall, og hjelpere for lag som tegnes i nettleseren |
@@ -70,20 +71,38 @@ regnefunksjonene bruker det ikke. Temaene fra Miljødirektoratet har dataene sin
 Det som bare er hjelpemidler for én fil, er vanlige variabler i den filen: minner for svar og bilder, tellere som skiller
 gamle svar fra nye, tidtakere og måling.
 
-## Veien til React og Miljødirektoratets designsystem
+## Miljødirektoratets designsystem
 
-Løsningen skal etter hvert over på React og Miljødirektoratets designsystem (<https://design.miljodirektoratet.no>). Det er
-ikke tatt i bruk her. Dette er det som er kartlagt, per oktober 2026:
+Siden følger Miljødirektoratets designsystem (<https://design.miljodirektoratet.no>) med stilen fra
+`@miljodirektoratet/md-css`, uten React. Klassene og HTML-strukturen er de som står i designsystemets
+[Storybook](https://miljodir.github.io/md-components) og i README-filene i pakken.
 
-- Komponentene ligger i `@miljodirektoratet/md-react` (6.35.0) og stilen i `@miljodirektoratet/md-css` (6.32.0), åpen kildekode
-  i `miljodir/md-components` på GitHub. Komponentene krever React 19.2.5 og bygger på Ariakit.
+- `md.css` er de delene av pakken siden bruker, samlet i én fil: variablene (farger, størrelser, skrift), typografi,
+  knapp, lenke, avkrysning og melding. Filen lages av `npm run md-css` og endres ikke for hånd. Versjonen står i
+  `package.json`.
+- `stil.css` bruker designsystemets variabler (`--md-...`) til tekst, flater, kanter, fokus og skrift. Sidens egne navn
+  (`--ink`, `--surface`, `--line` osv.) peker dit, så resten av stilen følger med.
+- I bruk: `md-button` (primær, sekundær og tertiær), `md-link`, `md-checkbox` og `md-alert-message`. Et valg som er slått
+  på (`aria-pressed`), vises som primærknapp.
+- Fylke og kommune er vanlige `select`-elementer med utseendet til `MdSelect`. `MdSelect` bygger på Ariakit og krever React.
+- Designsystemet har ikke mørkt tema, så siden har det heller ikke lenger.
+- Skriftene er Open Sans og Sofia Pro. Open Sans lastes fra Google Fonts. Sofia Pro er en lisensiert skrift som ikke følger
+  med siden. Overskriftene bruker den hvis den finnes på enheten, ellers Open Sans. Om siden kan levere Sofia Pro selv, må
+  avklares med Miljødirektoratet.
+- Det designsystemet ikke har, er laget selv med designsystemets variabler: tabeller, stolpene som viser fordeling,
+  tegnforklaringer med fargeruter, radene som slår lag av og på, og alt i kartet.
+- Kartfargene for arealklasser og tema er data, ikke utforming, og følger ikke designsystemet.
+
+## Veien til React
+
+Løsningen skal etter hvert over på React og komponentene i `@miljodirektoratet/md-react` (6.35.0). Komponentene krever React
+19.2.5 og bygger på Ariakit. Dette er det som er kartlagt, per oktober 2026:
+
 - Det som dekkes direkte: velgere for fylke og kommune (`MdSelect`, `MdComboBox`), knapper og lenker (`MdButton`, `MdLink`),
   detaljer som åpnes (`MdAccordion`), lag av og på (`MdToggle`, `MdCheckbox`, `MdFilterChip`), opplasting (`MdFileUpload`),
   meldinger som «ingen kommuneplan» (`MdAlertMessage`, `MdInfoBox`), venting (`MdLoadingSpinner`), hjelpetekst (`MdHelpText`,
   `MdTooltip`), merkelapper (`MdTag`, `MdBadge`), faner og fliser til temasider (`MdTabs`, `MdTile`).
-- Det som må lages selv: tabeller, stolpene som viser fordeling, tegnforklaringer med fargeruter, og alt i kartet.
-- Designsystemet har ikke mørkt tema. Skriftene er Open Sans og Sofia Pro, og hovedfargen er mørk grønn (`#005e5d`).
-- Kartfargene for arealklasser og tema er data, ikke utforming, og følger med som de er.
+- Klassene som allerede er i bruk, er de samme som React-komponentene lager, så utseendet endres lite ved overgangen.
 
 Det som gjør overgangen enklere, er skillet over: regnefunksjonene flyttes, `vis`-funksjonene skrives om til komponenter, og
 `app` blir lageret. De store rutenettene og bildene bør da ligge utenfor lageret, med bare tallene inni.
@@ -106,11 +125,12 @@ Verktøyene ligger i `verktoy/` og trengs bare under utvikling.
   Ett kjent avvik som ikke skyldes koden: arealet for én verdikategori i Oslo veksler med én dekar mellom kjøringer.
 - `sjekk-regning.js` kontrollerer skillet mellom regning og tegning, og `sjekk-navn.js` navnene i skriptene, se over.
   `npm run sjekk` kjører begge.
+- `md-css.js` lager `md.css` fra designsystemets pakke, se over. `npm run md-css` etter `npm install`.
 - `oversiktsbilde.py` lager de lagrede oversiktsbildene, for eksempel `python3 verktoy/oversiktsbilde.py --fylke 50`.
   Én kommune koster 4 til 16 kall mot NIBIO.
 - `testdata/testplan-bygg.geojson` er tolv planflater fra Trondheim, hentet fra DiBK, til test av opplasting.
 
-`npm install` henter Playwright og Prettier. `npm run formater` formaterer koden etter `.prettierrc.json`.
+`npm install` henter Playwright, Prettier og designsystemets stil. `npm run formater` formaterer koden etter `.prettierrc.json`.
 
 ## Kilder
 
