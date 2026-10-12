@@ -2,13 +2,11 @@ name: Publiser på GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'preview/**'
+  delete:
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -16,24 +14,111 @@ concurrency:
 
 jobs:
   bygg:
+    if: ${{ github.event_name != 'delete' || (github.event.ref_type == 'branch' && startsWith(github.event.ref, 'preview/')) }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: main
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
-      - run: npm ci
-      - run: npm run sjekk
-      - run: npm run build
+      - name: Finn og hent aktive preview-grener
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          branches="$RUNNER_TEMP/preview-branches.txt"
+          tilgjengelige="$RUNNER_TEMP/preview-branches-available.txt"
+          gh api --paginate --jq '.[].name' "repos/${GITHUB_REPOSITORY}/branches?per_page=100" \
+            | awk '/^preview\// { print }' > "$branches"
+          : > "$tilgjengelige"
+          while IFS= read -r branch; do
+            [ -n "$branch" ] || continue
+            if git fetch --no-tags --depth=1 origin "+refs/heads/${branch}:refs/remotes/origin/${branch}"; then
+              printf '%s\n' "$branch" >> "$tilgjengelige"
+            else
+              echo "::warning::Preview-grenen $branch ble slettet mens nettstedet ble bygd."
+            fi
+          done < "$branches"
+          mv "$tilgjengelige" "$branches"
+          git config --local --unset-all http.https://github.com/.extraheader || true
+      - name: Bygg hovedsiden og alle preview-grener
+        run: |
+          set -euo pipefail
+          site="$RUNNER_TEMP/pages-site"
+          main_dist="$RUNNER_TEMP/pages-main-dist"
+          branches="$RUNNER_TEMP/preview-branches.txt"
+          successful="$RUNNER_TEMP/preview-successful.txt"
+          rm -rf "$site" "$main_dist"
+          mkdir -p "$site"
+
+          npm ci
+          npm run sjekk
+          npm run build -- --outDir "$main_dist" --emptyOutDir
+          cp -a "$main_dist/." "$site/"
+
+          : > "$successful"
+          index=0
+          while IFS= read -r branch; do
+            [ -n "$branch" ] || continue
+            slug="${branch#preview/}"
+            if [ -z "$slug" ]; then
+              echo "::warning::Hopper over preview-gren uten navn etter preview/."
+              continue
+            fi
+
+            source="$RUNNER_TEMP/preview-source-$index"
+            dist="$RUNNER_TEMP/preview-dist-$index"
+            destination="$site/preview/$slug"
+            rm -rf "$source" "$dist"
+            if ! git worktree add --detach "$source" "refs/remotes/origin/$branch"; then
+              echo "::warning::Klarte ikke å hente preview-grenen $branch."
+              index=$((index + 1))
+              continue
+            fi
+
+            if (cd "$source" && npm ci && npm run sjekk && npm run build -- --outDir "$dist" --emptyOutDir); then
+              mkdir -p "$destination"
+              cp -a "$dist/." "$destination/"
+              printf '%s\n' "$branch" >> "$successful"
+              echo "Bygde $branch til preview/$slug/"
+            else
+              echo "::warning::Bygg av preview-grenen $branch feilet; hovedsiden og øvrige previews blir publisert."
+            fi
+            git worktree remove --force "$source" || true
+            index=$((index + 1))
+          done < "$branches"
+
+          {
+            echo '## GitHub Pages'
+            echo '- Hovedside: https://miljodir.github.io/naturregnskap-test/'
+            if [ -s "$successful" ]; then
+              echo '- Preview-grener:'
+              while IFS= read -r branch; do
+                slug="${branch#preview/}"
+                url_slug=$(node -e 'console.log(process.argv[1].split("/").map(encodeURIComponent).join("/"))' "$slug")
+                echo "  - $branch: https://miljodir.github.io/naturregnskap-test/preview/$url_slug/"
+              done < "$successful"
+            else
+              echo '- Ingen aktive preview-grener.'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: dist
+          path: ${{ runner.temp }}/pages-site
 
   publiser:
     needs: bygg
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.publisering.outputs.page_url }}

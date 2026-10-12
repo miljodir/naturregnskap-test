@@ -128,7 +128,37 @@ Siden følger Miljødirektoratets designsystem (<https://design.miljodirektorate
 1. `npm install` én gang. `npm run dev` starter siden lokalt og laster på nytt ved endringer.
 2. Gjør endringen. `npm run sjekk` og `npm run test` før større endringer.
 3. Commit og push til `main`. Arbeidsflyten `.github/workflows/pages.yml` kjører sjekkene, bygger siden og legger den ut på
-   GitHub Pages. Utgavemerket settes ved byggingen og vises under «Vis teknisk informasjon».
+  GitHub Pages. Utgavemerket settes ved byggingen og vises under «Vis teknisk informasjon».
+
+### Forhåndsvis en feature-gren
+
+Lag grenen fra siste `main`, og gi den navn etter mønsteret `preview/<person>/<feature>`, for eksempel
+`preview/anne/kartfilter`. Push grenen for å bygge og publisere den. URL-en blir:
+
+`https://miljodir.github.io/naturregnskap-test/preview/anne/kartfilter/`
+
+URL-en for hver vellykket preview vises i oppsummeringen for kjøringen under Actions. Hovedsiden ligger fortsatt på
+<https://miljodir.github.io/naturregnskap-test/>. Push til `main` eller en `preview/**`-gren bygger hele nettstedet på
+nytt med `main` i roten og hver aktiv preview i sin undermappe. Når en preview-gren slettes, fjernes den ved neste Pages-
+bygg. `workflow_dispatch` under Actions starter også en full ombygging.
+
+GitHub Pages er offentlig. Alle som har URL-en, kan se både hovedsiden og forhåndsvisningene. Ikke publiser hemmelig eller
+sensitivt innhold i en preview-gren.
+
+### Forhåndsvis en feature-gren
+
+Gi grenen navn etter mønsteret `preview/<person>/<feature>`, for eksempel `preview/anne/kartfilter`, og push den.
+GitHub Actions bygger `main` og alle aktive `preview/**`-grener til ett samlet Pages-nettsted:
+
+- Hovedsiden: <https://miljodir.github.io/naturregnskap-test/>
+- `preview/anne/kartfilter`: <https://miljodir.github.io/naturregnskap-test/preview/anne/kartfilter/>
+
+URL-ene for vellykkede previews vises i oppsummeringen for kjøringen under Actions. Hver push til `main` eller en
+`preview/**`-gren bygger hele nettstedet på nytt. Når preview-grenen slettes, bygger arbeidsflyten siden på nytt uten den,
+slik at forhåndsvisningen fjernes.
+
+GitHub Pages-siden er offentlig. Alle som har URL-en, kan se både hovedsiden og forhåndsvisningene. Publiser derfor ikke
+hemmelig eller sensitivt innhold i en preview-gren.
 
 `npm run build` lager det ferdige bygget i `dist/`, og `npm run preview` viser det lokalt. Sidene for METODE og
 AVHENGIGHETER lages fra markdown-filene ved byggingen og finnes ikke under `npm run dev`.

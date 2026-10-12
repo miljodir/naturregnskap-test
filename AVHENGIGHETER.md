@@ -55,8 +55,13 @@ Lagret sammen med siden ligger listen over fylker og kommuner (`public/kommuner.
 
 ## Drift
 
-Siden ligger på GitHub Pages. Ved push til `main` i repoet `miljodir/naturregnskap-test` bygger arbeidsflyten
-`.github/workflows/pages.yml` siden og legger den ut. Under Settings → Pages er kilden satt til GitHub Actions.
+Siden ligger på GitHub Pages. Ved push til `main` eller `preview/**` i repoet `miljodir/naturregnskap-test` bygger
+arbeidsflyten `.github/workflows/pages.yml` hovedsiden og alle aktive previews til ett samlet Pages-bygg. `main` ligger i
+rotmappen, mens for eksempel `preview/anne/kartfilter` publiseres under `/preview/anne/kartfilter/`. Sletting av en
+preview-gren bygger nettstedet på nytt uten den. Under Settings → Pages er kilden satt til GitHub Actions.
+
+GitHub Pages er offentlig; preview-URL-ene er også åpne for alle som har adressen. De er beregnet på kode og innhold som
+tåler offentlig visning.
 
 ## Vilkår for dataene
 
