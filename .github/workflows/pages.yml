@@ -57,9 +57,20 @@ jobs:
           rm -rf "$site" "$main_dist"
           mkdir -p "$site"
 
+          build_site() {
+            local output_dir="$1"
+            local build_script
+            build_script="$(node -e 'const p = JSON.parse(require("fs").readFileSync("package.json", "utf8")); const s = p.scripts || {}; process.stdout.write(s.build ? "build" : s.bygg ? "bygg" : "");')"
+            if [ -z "$build_script" ]; then
+              echo "::error::package.json must define scripts.build or scripts.bygg."
+              return 1
+            fi
+            npm run "$build_script" -- --outDir "$output_dir" --emptyOutDir
+          }
+
           npm ci
           npm run sjekk
-          npm run build -- --outDir "$main_dist" --emptyOutDir
+          build_site "$main_dist"
           cp -a "$main_dist/." "$site/"
 
           : > "$successful"
@@ -82,7 +93,7 @@ jobs:
               continue
             fi
 
-            if (cd "$source" && npm ci && npm run sjekk && npm run build -- --outDir "$dist" --emptyOutDir); then
+            if (cd "$source" && npm ci && npm run sjekk && build_site "$dist"); then
               mkdir -p "$destination"
               cp -a "$dist/." "$destination/"
               printf '%s\n' "$branch" >> "$successful"
